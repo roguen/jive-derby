@@ -54,8 +54,8 @@ This library is also used with the creation of the animated GIF for the Jive Der
 ````bash
 cd /tmp
 wget https://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.25/GraphicsMagick-1.3.25.tar.gz
-tar xvzf ImageMagick.tar.gz
-cd ImageMagick-*
+tar xvzf GraphicsMagick-1.3.25.tar.gz
+cd GraphicsMagick-*
 ./configure
 make
 sudo make install
