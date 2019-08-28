@@ -1,3 +1,6 @@
+Please note that the following project is a fork of the Jive Derby project by Ryan Rutan. The original project may be found here:
+https://github.com/jivesoftware/jive-derby
+
 
 ![Jive Derby](./raspi/public/images/jive-derby-logo.png "Jive Derby")
 
