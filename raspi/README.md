@@ -82,7 +82,7 @@ ngrok authtoken {YOUR_AUTH_TOKEN_ONCE_REGISTERED_ON_NGROK}
 ##### Sync Jive Derby Repo from Github
 ````bash
 cd ~
-git clone https://github.com/jivesoftware/jive-derby.git
+git clone https://github.com/roguen/jive-derby.git
 ````
 
 ##### Update jiveclientconfiguration.json
