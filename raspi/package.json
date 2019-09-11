@@ -29,7 +29,6 @@
     "glob-stream": "~3.1.9",
     "gm": "1.23.0",
     "ip": "1.1.5",
-    "jive-sdk": "^0.2.17",
     "jpeg-js": "0.2.0",
     "jpg-stream": "1.1.1",
     "method-override": "2.3.6",
@@ -42,7 +41,7 @@
     "serve-favicon": "2.3.0",
     "socket.io": "1.7.2",
     "through2": "~0.2.3",
-    "thunderboard-ble": "^0.1.0",
+    "thunderboard-ble": "^0.1.2",
     "uuid": "3.0.1"
   }
 }

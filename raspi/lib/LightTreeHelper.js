@@ -1,7 +1,5 @@
 'use strict';
 
-var jive = require('jive-sdk');
-
 var RESET_LIGHTS = {
   "red" : false,
   "yellow" : false,
@@ -73,7 +71,7 @@ LightTreeHelper.prototype.init = function(gpio,config) {
       } // end function
     );
   } else {
-    jive.logger.debug("LightTreeHelper is disabled, ignoring init ...");
+    console.log("LightTreeHelper is disabled, ignoring init ...");
   } // end if
 } // end function
 
@@ -102,7 +100,7 @@ LightTreeHelper.prototype.setTreeState = function(lightStates,blink,timeout) {
   } // end if
 
   if (blink) {
-    jive.logger.debug("Setting Lights to BLINK",lightStates);
+    console.log("Setting Lights to BLINK",lightStates);
     self.setLightStates(lightStates);
     self.currentInterval = setInterval(
       function() {
@@ -112,7 +110,7 @@ LightTreeHelper.prototype.setTreeState = function(lightStates,blink,timeout) {
     );
     self.scheduleLightReset(timeout);
   } else {
-    jive.logger.debug("Setting Lights to ON",lightStates);
+    console.log("Setting Lights to ON",lightStates);
     self.setLightStates(lightStates);
     self.scheduleLightReset(timeout);
   } // end if

@@ -1,8 +1,146 @@
 'use strict';
 
-var jive = require('jive-sdk');
-var config = jive.service.options["ext"];
-var db = jive.service.persistence();
+var config = {
+      "defaults" : {
+        "diagnosticMode" : true,
+        "maxLanes" : 4,
+        "cloudServiceURL" : "https://TODO_YOUR_JIVE_DERBY_CLOUD_SERVICE_URL.com",
+        "bleStartupDelay" : 1000
+      },
+      "jive" : {
+        "tenantID" : "TODO_YOUR_JIVE_TENANT_ID",
+        "extendedProfileFields" : {
+          "company" : "Company",
+          "title" : "Title",
+          "todo" : "Note to customizer.  See also: service/jiveclientconfiguration.json > ext.jive.options.apiUserFields"
+        }
+      },
+      "security" : {
+        "local" : {
+          "username" : "TODO_REPLACE_ME",
+          "password" : "TODO_REPLACE_ME"
+        },
+        "remote" : {
+          "header": "X-API-KEY",
+          "value": "TODO_REPLACE_ME"
+        }
+      },
+      "derby" : {
+        "id" : "todo",
+        "name" : "TODO: Replace Me",
+        "public" : true,
+        "active" : true,
+        "createOnStartup" : true
+      },
+      "ryg-light-tree" : {
+        "enabled" : false,
+        "defaultTimeout" : 60000,
+        "blinkInterval" : 500,
+        "light-pins" : {
+          "red" : 38,
+          "yellow" : 40,
+          "green" : 36
+        }
+      },
+      "ir-break-sensors" : [
+        {
+        "enabled" : false,
+        "label"  : "1/2 Way Point",
+        "gpio-sensor-pin" : 3
+        },
+        {
+        "enabled" : false,
+        "label"  : "1/4 Way Point",
+        "gpio-sensor-pin" : 5
+        }
+      ],
+      "camera" : {
+        "mode" : "timelapse",
+        "encoding" : "jpg",
+        "quality" : 100,
+        "width" : 474,
+        "height" : 648,
+        "timeout" : 4500,
+        "tl" : 500,
+        "awb" : "auto",
+        "ex" : "sports",
+        "ifx" : "none",
+        "burst" : true,
+        "roi" : "0.5,0.5,0.41,1",
+        "output" : "/tmp/default.jpg"
+      },
+      "gifencoder" : {
+        "repeat" : 0,
+        "delay" : 500,
+        "quality" : 100,
+        "files" : "/tmp/%d-jive-derby-??.jpg",
+        "output" : "/tmp/jive-derby-%d-cam.gif",
+        "label" : {
+          "enabled" : false,
+          "text" : "%s #%d\n%s",
+          "gravity" : "NorthWest",
+          "font" : "Helvetica",
+          "fontColor" : "white",
+          "fontSize" : 10
+        }
+      },
+      "derby-timer": {
+        "enabled" : false,
+        "device" : "/dev/derby-timer",
+        "baudRate" : 19200,
+        "raceResultsTimeoutMs" : 10500,
+        "autoResetTimeoutMs" : 10000,
+        "trackDistanceFt" : 32,
+        "sendRaceStartSignal" : true
+      },
+      "aws" : {
+        "iot" : {
+          "thing": {
+            "name" : "TODO_REPLACE_WITH_AWS_IOT_DEVICE_NAME",
+            "arn" : "arn:aws:iot:$s:TODO_REPLACE:thing/%s",
+            "shadowBaseTopic" : "$aws/things/%s/shadow",
+            "options" : {
+              "pushStrategy" : "ALL",
+              "pushDelayMs" : 3000
+            },
+            "config" : {
+                "host" : "TODO_REPLACE.iot.us-east-1.amazonaws.com",
+               "keyPath": "lib/certs/jive-derby-environment.private.key",
+              "certPath": "lib/certs/jive-derby-environment.cert.pem",
+                "caPath": "lib/certs/root.pem",
+                "clientId" : "JiveDerby-Raspi",
+                "region": "us-east-1",
+                "debug" : false
+            }
+          }
+        }
+      },
+      "iot-devices" : {
+        "000b57xxxxxx" : {
+           "enabled" : false,
+           "uuid" : "000b57xxxxxx",
+           "address" : "00:0B:57:xx:xx:xx",
+           "name" : "TODO: CUSTOMIZE IOT DEVICE ADDRESS",
+           "family" : "thunderboard",
+           "type" : "sense",
+           "autoconnect" : true,
+           "readIntervals" : {
+             "environment" : {
+               "humidity" : 15000,
+               "temperature" : 15000,
+               "uv" : 15000,
+               "ambient-light" : 15000,
+               "pressure" : 15000,
+               "sound-level" : 15000
+             }
+           },
+           "services" : {
+             "environment" : ["humidity","temperature","uv","ambient-light","pressure","sound-level"]
+          }
+        }
+      }
+    };
+//var db = jive.service.persistence();
 var DerbyTimer = require('./DerbyTimer');
 var SocketIo = require('./SocketIoHelper');
 var gpio = require("rpi-gpio");
@@ -10,15 +148,15 @@ var extend = require('util')._extend;
 var lightTree = require('./LightTreeHelper');
 var RaceCamera = require('./RaceCameraHelper');
 
-const RACE_STATUS_PENDING = "pending";
-const RACE_STATUS_STARTED = "started";
-const RACE_STATUS_FINISHED = "finished";
+var RACE_STATUS_PENDING = "pending";
+var RACE_STATUS_STARTED = "started";
+var RACE_STATUS_FINISHED = "finished";
 
 var RaceManager = function Constructor(config) {
 
-  jive.logger.info("*****************************************");
-  jive.logger.info("**** Jive Derby RaceManager Startup ****");
-  jive.logger.info("*****************************************");
+  console.log("*****************************************");
+  console.log("**** Jive Derby RaceManager Startup ****");
+  console.log("*****************************************");
 
   var self = this;
   config = config || {};
@@ -45,24 +183,24 @@ var RaceManager = function Constructor(config) {
   } // end function
 
   function sendToResultHandler() {
-    jive.logger.debug('Waiting for Result Handler to Finish...',self.lastRaceResults,self.lastRacePhoto);
+    console.log('Waiting for Result Handler to Finish...',self.lastRaceResults,self.lastRacePhoto);
 
     if (self.lastRaceResults && self.lastRacePhoto &&
         self.lastRaceResults["raceID"] === self.lastRacePhoto["raceID"]) {
 
-        jive.logger.debug('Pushing Results & Image to Result Processor...');
+        console.log('Pushing Results & Image to Result Processor...');
 
         /**** ECHO RESULTS TO THE MANAGER WEB APP ****/
         SocketIo.sendRaceResults(self.lastRaceResults);
 
         if (self.onResultsCallback) {
-          jive.logger.debug('Pushing Race Results Upstream for Processing ...');
+          console.log('Pushing Race Results Upstream for Processing ...');
           self.onResultsCallback({
             raceResults : self.lastRaceResults,
             photo : self.lastRacePhoto
           });
         } else {
-          jive.logger.warn('No Results Callback Defined ... ignoring...');
+          console.log('No Results Callback Defined ... ignoring...');
         } // end if
 
         /*** CLEAR OUT THE LAST RACE RESULTS ***/
@@ -76,7 +214,7 @@ var RaceManager = function Constructor(config) {
     jive.logger.debug("Timer Results Received",timerResults);
 
     if (!self.isRaceActive()) {
-      jive.logger.info("Received Results, but race not started, ignoring ...",timerResults);
+      console.log("Received Results, but race not started, ignoring ...",timerResults);
       return;
     } // end if
 
@@ -137,16 +275,16 @@ var RaceManager = function Constructor(config) {
 
   //*** OPTIONAL DEBUGGING TO DISABLE HARDWARE ***/
   if (config["derby-timer"]["enabled"]) {
-    jive.logger.debug("Initializing Derby Timer...");
+    console.log("Initializing Derby Timer...");
     this.derbyTimer = new DerbyTimer(config["derby-timer"],timerResultListener);
   } // end if
 
   // //*** OPTIONAL DEBUGGING TO DISABLE HARDWARE ***/
-  jive.logger.debug("Initializing Race Camera ...");
+  console.log("Initializing Race Camera ...");
   this.camera = new RaceCamera(config);
   this.camera.setPhotoReadyHandler(
     function(photo) {
-      jive.logger.debug('Received Race Photo Data ...',photo["raceID"],photo);
+      console.log('Received Race Photo Data ...',photo["raceID"],photo);
       /**** SAVE FOR PICKUP BY sendToResultHandler *****/
       self.lastRacePhoto = photo;
 
@@ -164,7 +302,7 @@ var RaceManager = function Constructor(config) {
     function(irSensor) {
       irEnabled = irEnabled || irSensor["enabled"];
       if (irSensor["enabled"]) {
-        jive.logger.info("Initializing IR Break Sensor ...",irSensor["label"]);
+        console.log("Initializing IR Break Sensor ...",irSensor["label"]);
         gpio.setup(irSensor["gpio-sensor-pin"],gpio.DIR_IN,gpio.EDGE_BOTH);
         irSensorNames[irSensor["gpio-sensor-pin"]] = irSensor;
       } // end if
@@ -178,7 +316,7 @@ var RaceManager = function Constructor(config) {
           if (self.isRaceActive() && self.isFirstBeamBreak(channel)) {
             self.splits.push(splitTimestamp);
           } else {
-            jive.logger.debug("","Race is not currently active, ignoring ...");
+            console.log("","Race is not currently active, ignoring ...");
           } // end if
         } // end if
       } // end function
@@ -191,7 +329,7 @@ var RaceManager = function Constructor(config) {
 } // end function
 
 RaceManager.prototype.reset = function() {
-  jive.logger.debug("Resetting for New Race...");
+  console.log("Resetting for New Race...");
   this.racerLanes = {};
   var previousRaceID = this.currentRaceID;
 
@@ -233,7 +371,7 @@ function startSequence(raceManager) {
               lightTree.setGreenState(true);
               raceManager.derbyTimer.start(function() {
                 raceManager.startTime = new Date();
-                jive.logger.debug('*** Race Started @',raceManager.startTime);
+                console.log('*** Race Started @',raceManager.startTime);
               });
             },
             secondInterval
@@ -249,7 +387,7 @@ function startSequence(raceManager) {
 RaceManager.prototype.startRace = function() {
   this.currentRaceID = new Date().getTime();
   this.currentStatus = RACE_STATUS_STARTED;
-  jive.logger.debug("Starting Race",this.currentRaceID,"...");
+  console.log("Starting Race",this.currentRaceID,"...");
 
   startSequence(this);
 
@@ -268,7 +406,7 @@ RaceManager.prototype.stopRace = function(errorDetected) {
     lightTree.setYellowState(true);
   } // end if
 
-  jive.logger.debug("Stopped Race",this.currentRaceID);
+  console.log("Stopped Race",this.currentRaceID);
 } // end function
 
 RaceManager.prototype.isRaceActive = function() {
@@ -292,7 +430,7 @@ RaceManager.prototype.isDiagnosticMode = function() {
 } // end function
 
 RaceManager.prototype.setDiagnosticMode = function(diagnosticMode) {
-  jive.logger.debug("Setting Diagnostic Mode",diagnosticMode);
+  console.log("Setting Diagnostic Mode",diagnosticMode);
   var self = this;
   self.diagnosticMode = diagnosticMode;
   SocketIo.sendMessage("INFO","Set Diagnostic Mode ["+diagnosticMode+"]");
@@ -303,7 +441,7 @@ RaceManager.prototype.getDerby = function() {
 } // end function
 
 RaceManager.prototype.setDerby = function(derby) {
-  jive.logger.debug("Setting Derby",derby);
+  console.log("Setting Derby",derby);
   this.derby = derby;
 } // end function
 
@@ -312,7 +450,7 @@ RaceManager.prototype.getRacerByLane = function(laneNumber) {
   if (self.racerLanes && laneNumber > 0 && laneNumber < self.maxLanes) {
     return self.racerLanes["L"+laneNumber];
   } else {
-    jive.logger.debug("Invalid GetRacerByLane",laneNumber,self.maxLanes,self.racerLanes);
+    console.log("Invalid GetRacerByLane",laneNumber,self.maxLanes,self.racerLanes);
   } // end if
   return null;
 } // end function
@@ -322,7 +460,7 @@ RaceManager.prototype.setRacerByLane = function(laneNumber,racer) {
   if (laneNumber > 0 && laneNumber < self.maxLanes && racer) {
     this.racerLanes["L"+laneNumber] = racer;
   } else {
-    jive.logger.debug("Invalid setRacerByLane Assignment",laneNumber,self.maxLanes,racer);
+    console.log("Invalid setRacerByLane Assignment",laneNumber,self.maxLanes,racer);
   } // end if
 } // end function
 
@@ -343,7 +481,7 @@ RaceManager.prototype.setRacers = function(racers) {
     );
     //console.log('****',self.racerLanes);
   } else {
-    jive.logger.debug("Invalid Racers Object",racers,self.maxLanes,racers);
+    console.log("Invalid Racers Object",racers,self.maxLanes,racers);
   } // end if
 } // end function
 

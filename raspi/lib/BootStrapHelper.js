@@ -1,7 +1,6 @@
 'use strict';
 
-var jive = require('jive-sdk');
-var config = jive.service.options["ext"];
+//var config = jive.service.options["ext"];
 var Thunderboard = require('thunderboard-ble');
 var RaceManager = require('./RaceManager');
 var lightTree = require('./LightTreeHelper');
@@ -23,7 +22,7 @@ function resetRace(delayMs) {
 } // end function
 
 function raceResultListener(data) {
-  jive.logger.debug("***","Results Received",data);
+  console.log("***","Results Received",data);
 
 
   var results = data["raceResults"];
@@ -36,18 +35,18 @@ function raceResultListener(data) {
     racePhoto: fs.createReadStream(photoPath)
   };
 
-  var requestData = {
+/*  var requestData = {
     url: config["defaults"]["cloudServiceURL"] + "/api/races",
     formData: formData
   };
 
   /*** ADD SECURITY HEADER ***/
-  var securityHeader = config["security"]["remote"]["header"];
+/*  var securityHeader = config["security"]["remote"]["header"];
   requestData["headers"] = {};
   requestData["headers"][securityHeader] = config["security"]["remote"]["value"];
 
   /*** SENDING TO SERVICE ***/
-  request.post(requestData, function (err, httpResponse, body) {
+/*  request.post(requestData, function (err, httpResponse, body) {
     if (err) {
       jive.logger.error("Error submitting race results",results["raceID"],httpResponse,err);
       lightTree.setRedState(true,true);
@@ -55,7 +54,7 @@ function raceResultListener(data) {
       lightTree.setGreenState(true,true);
       jive.logger.info("Successfully sent Race Results to Cloud",results["raceID"]);
       /**** REMOVE FILE FROM FILE-SYSTEM SINCE IT WAS SUCCESSFULLY STORED IN THE CLOUD ****/
-      fs.unlink(photoPath);
+/*      fs.unlink(photoPath);
     } // end if
 
     /*** DELAYING THE RESET ***/
@@ -68,45 +67,68 @@ function raceResultListener(data) {
 exports.onBootstrap = function(app) {
   lightTree.setYellowState(true,true);
 
-  jive.logger.info('Initializing Services ....');
-  jive.logger.info('Setting Race Results Listener...');
+  console.log('Initializing Services ....');
+  console.log('Setting Race Results Listener...');
 
   RaceManager.setResultsCallback(raceResultListener);
 
   /*** PUTTING IN A DELAY TO INSURE WE CAN SEE OTHER START UP STATS FIRST ***/
   resetRace(15000);
 
-  jive.logger.info('Creating Derby Record...');
+  console.log('Creating Derby Record...');
 
-  if (config["derby"]["createOnStartup"]) {
+/*  if (false) {
     var requestData = {
       url: config["defaults"]["cloudServiceURL"] + "/api/derby",
       json : config["derby"]
     };
     /*** ADD SECURITY HEADER ***/
-    var securityHeader = config["security"]["remote"]["header"];
+/*    var securityHeader = config["security"]["remote"]["header"];
     requestData["headers"] = {};
     requestData["headers"][securityHeader] = config["security"]["remote"]["value"];
 
     /*** SENDING TO SERVICE ***/
-    request.post(requestData, function (err, httpResponse, body) {
+/*    request.post(requestData, function (err, httpResponse, body) {
       if (err) {
         lightTree.setRedState(true,true);
-        jive.logger.error("Failed to POST Derby Details",err);
+        console.log("Failed to POST Derby Details",err);
         return;
       } // end if
       lightTree.setGreenState(true,true);
-      jive.logger.info("Successfully created Derby",config["derby"]["id"],config["derby"]["name"]);
+      console.log("Successfully created Derby",config["derby"]["id"],config["derby"]["name"]);
     });
   } // end if
-
-  var awsIot = new AwsIot(config["aws"]["iot"]["thing"]);
+*/
+//  var awsIot = new AwsIot(config["aws"]["iot"]["thing"]);
 
   var iotValues = {};
   var awsPushTimer = null;
-  var thunderboard = new Thunderboard(config["iot-devices"],
+    var tbConfig = {
+        "000b570C7156" : {
+         "uuid" : "000b570C7156",
+         "enabled" : true,
+         "family" : "thunderboard",
+         "type" : "react",
+         "autoconnect" : true,
+         "readIntervals" : {
+           "environment" : {
+             "humidity" : 15000,
+             "temperature" : 15000,
+             "uv" : 15000
+           },
+           "ambient-light" : {
+             "ambient-light" : 15000
+           }
+          },
+         "services" : {
+           "environment" : ["humidity","temperature","uv"],
+           "ambient-light" : ["ambient-light"]
+        }
+      }
+    };
+  var thunderboard = new Thunderboard(tbConfig,
     function(event) {
-      jive.logger.debug("***",event["service"]["name"],event["characteristic"]["name"],event["value"]);
+      console.log("***",event["service"]["name"],event["characteristic"]["name"],event["value"]);
 
       var serv = event["service"]["name"];
       var char = event["characteristic"]["name"];
@@ -118,7 +140,7 @@ exports.onBootstrap = function(app) {
       iotValues[serv][char]["ts"] = new Date().getTime();
 
       if (awsPushTimer) {
-        jive.logger.debug('***','Clearing existing timer, as there is more data to send');
+        console.log('***','Clearing existing timer, as there is more data to send');
         clearTimeout(awsPushTimer);
         awsPushTimer = null;
       } // end if
@@ -126,11 +148,11 @@ exports.onBootstrap = function(app) {
       if (!awsPushTimer) {
         awsPushTimer = setTimeout(
           function() {
-            jive.logger.debug('***','Sending Data to AWS IoT',iotValues);
-            awsIot.updateShadow(iotValues);
+            console.log('***','Sending Data to AWS IoT',iotValues);
+//            awsIot.updateShadow(iotValues);
             awsPushTimer = null;
           }, // end function
-          config["aws"]["iot"]["thing"]["options"]["pushDelayMs"]
+          3000
         );
       } // end if
     }, // end function

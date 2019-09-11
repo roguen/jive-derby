@@ -1,10 +1,9 @@
 'use strict';
 
-var jive = require('jive-sdk');
 var SerialPort = require('serialport');
 
-const RACE_RESULTS_EVENT_NAME = "DerbyTimerResults";
-const RESULT_DELIMITERS = [33,34,35,36,37,38,39,40]; /*** ASCII CODES FOR ! " # $ % & ' ( * ***/
+var RACE_RESULTS_EVENT_NAME = "DerbyTimerResults";
+var RESULT_DELIMITERS = [33,34,35,36,37,38,39,40]; /*** ASCII CODES FOR ! " # $ % & ' ( * ***/
 
 /**
  * Parses the raw USB data into an object. Inbound data will be one a string
@@ -18,7 +17,7 @@ const RESULT_DELIMITERS = [33,34,35,36,37,38,39,40]; /*** ASCII CODES FOR ! " # 
  * @return {Object}          Parsed data object for Firebase.
  */
 function parseResult (result) {
-  const parts = result["data"].split("=");
+  var parts = result["data"].split("=");
   var data = {};
   if (parts.length === 2) {
     data['L'+parts[0]] = {
@@ -62,10 +61,7 @@ var DerbyTimer = function Constructor(config,listener) {
     });
 
     self.port.on('open', () => {
-      jive.logger.debug(`*** Connected to Derby Timer ${self.port.path} @ ${self.port.options.baudRate}`);
-
-      /*** REGISTER THE LISTENER ***/
-      jive.events.addListener(RACE_RESULTS_EVENT_NAME, listener);
+      console.log(`*** Connected to Derby Timer ${self.port.path} @ ${self.port.options.baudRate}`);
 
       /*** RESETS ALL THE VARIABLES AND TIMER DISPLAY ***/
       self.reset();
@@ -79,7 +75,7 @@ var DerbyTimer = function Constructor(config,listener) {
           function() {
 
             /** EMIT AGGREGATED RACE RESULTS ***/
-            jive.events.emit(
+/*            jive.events.emit(
               RACE_RESULTS_EVENT_NAME, {
                 timestamp : new Date(),
                 results : self.results
@@ -113,7 +109,7 @@ var DerbyTimer = function Constructor(config,listener) {
 
 DerbyTimer.prototype.reset = function() {
   var self = this;
-  jive.logger.debug('*** Resetting Timer ...');
+  console.log('*** Resetting Timer ...');
 
   //** RESET VARIABLES ***/
   self.results = {};
@@ -125,7 +121,7 @@ DerbyTimer.prototype.reset = function() {
   //** RESET THE DISPLAY TIMER ***/
   self.port.write('R', function(err) {
     if (err) {
-      jive.logger.error('*** Error Resetting Display: ',err.message);
+      console.log('*** Error Resetting Display: ',err.message);
     }
   });
 } // end function
@@ -135,13 +131,13 @@ DerbyTimer.prototype.start = function(callback) {
 
   //** RESET THE DISPLAY TIMER ***/
   if (self.config["sendRaceStartSignal"]) {
-    jive.logger.debug('*** Starting Race Solenoid ...');
+    console.log('*** Starting Race Solenoid ...');
 
     self.port.write('S', function(err) {
         if (err) {
-          jive.logger.error('*** Error Starting Solenoid: ',err.message);
+          console.log('*** Error Starting Solenoid: ',err.message);
         } else {
-          jive.logger.debug('*** Successfully sent Start Command!');
+          console.log('*** Successfully sent Start Command!');
           callback();
         } // end if
       } // end function

@@ -1,6 +1,5 @@
 'use strict';
 
-var jive = require('jive-sdk');
 var RaspiCam = require("raspicam");
 var GraphicsMagick = require('gm');
 var fs = require('fs');
@@ -30,24 +29,24 @@ var RaceCamera = function Constructor(config) {
         return raceImages;
       }, // end function
       function (err) {
-        jive.logger.debug('Unable to get Race Images',raceID,err);
+        console.log('Unable to get Race Images',raceID,err);
         return [];
       } // end function
     );
   } // end function
 
   function cleanupFiles(files) {
-    jive.logger.debug('Cleaning Up Camera Files...',self.imageDir);
+    console.log('Cleaning Up Camera Files...',self.imageDir);
     files.forEach(
       function(file) {
-        jive.logger.debug('Removing Camera Still',file,'...');
+        console.log('Removing Camera Still',file,'...');
         fs.unlink(file);
       } // end function
     );
   } // end function
 
   function onCameraComplete(cameraFinishedTimestamp) {
-    jive.logger.debug("Starting GIF Generation...");
+    console.log("Starting GIF Generation...");
     var raceID = self.currentRaceID;
     var derby = self.currentDerby;
     var outputFileName = util.format(self.config["gifencoder"]["output"],raceID);
@@ -57,7 +56,7 @@ var RaceCamera = function Constructor(config) {
     /*** ADD IMAGES TO ENCODER ***/
     getRaceImages(raceID).then(
       function(raceImages) {
-        jive.logger.debug('****','Found',raceImages.length,'Race Images.');
+        console.log('****','Found',raceImages.length,'Race Images.');
         raceImages.forEach(
           function(raceImage) {
             gif.in(raceImage);
@@ -116,7 +115,7 @@ var RaceCamera = function Constructor(config) {
             } // end if
 
             var timeToCompleteSec = (new Date().getTime()-cameraFinishedTimestamp)/1000;
-            jive.logger.debug('\t','GIF Finished',raceID,timeToCompleteSec,'seconds');
+            console.log('\t','GIF Finished',raceID,timeToCompleteSec,'seconds');
 
             /*** CLEAN UP RACE ID ***/
             self.currentRaceID = null;
