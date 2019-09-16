@@ -78,6 +78,24 @@ ngrok authtoken {YOUR_AUTH_TOKEN_ONCE_REGISTERED_ON_NGROK}
 >Note: In **raspi/package.json** you can customize/remove the **ngrok** start command / parameters.
 
 #### Manual Setup Steps
+##### Installation of Node Version Manager (NVM) and the correct Node.js version (6.9.4) for this project
+###### Install NVM
+* *Execute following commands:
+````bash
+git clone https://github.com/creationix/nvm.git ~/.nvm
+sudo echo "source ~/.nvm/nvm.sh" >> ~/.bashrc && sudo echo "source ~/.nvm/nvm.sh" >> ~/.profile
+````
+* *Exit all terminals and/or ssh sessions and open a new one.
+* *Check if the installation worked:
+````bash
+nvm --version
+````
+* *It will read the nvm version.  for me it was 0.34.0
+
+###### Install Node.js
+````bash
+nvm install 6.9.4
+````
 
 ##### Sync Jive Derby Repo from Github
 ````bash
