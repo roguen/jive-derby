@@ -107,3 +107,22 @@ CREATE TABLE jderby_measurements (
 ALTER SEQUENCE jderby_measurement_id_seq OWNED BY jderby_measurements.ID;
 CREATE INDEX ON jderby_measurements ((raceID));
 CREATE INDEX ON jderby_measurements ((type));
+
+-- ##################################################
+CREATE SEQUENCE jderby_reg_cars_id_seq;
+CREATE TABLE jderby_reg_cars
+(
+    carID INTEGER PRIMARY KEY DEFAULT nextval('jderby_reg_cars_id_seq'),
+	regID INTEGER REFERENCES jderby_reg_racers (id),
+    weight NUMERIC,
+    reactUUID VARCHAR(255),
+	frontPicURL VARCHAR(255),
+	rightPicURL VARCHAR(255),
+	topPicURL VARCHAR(255),
+	anglePicURL VARCHAR(255),
+	backPicURL VARCHAR(255),
+	leftPicURL VARCHAR(255),
+	bottomPicURL VARCHAR(255)
+);
+ALTER SEQUENCE jderby_reg_cars_id_seq OWNED BY jderby_reg_cars.carid;
+CREATE INDEX ON jderby_reg_cars (carID);
