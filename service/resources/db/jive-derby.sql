@@ -7,6 +7,9 @@ DROP TABLE IF EXISTS jderby_races;
 DROP SEQUENCE IF EXISTS jderby_races_name_seq;
 DROP TABLE IF EXISTS jderby_result_echo;
 DROP TABLE IF EXISTS jderby_derbies;
+DROP TABLE IF EXISTS jderby_reg_cars;
+DROP TABLE IF EXISTS jderby_reg_racers;
+DROP SEQUENCE IF EXISTS jderby_reg_cars_id_seq;
 
 -- TODO: NEED TO ADD NON-NULL CONSTRAINTS AND VALIDATIONS TO SCHEMA (as needed)
 
