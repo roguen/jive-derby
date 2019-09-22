@@ -108,6 +108,16 @@ ALTER SEQUENCE jderby_measurement_id_seq OWNED BY jderby_measurements.ID;
 CREATE INDEX ON jderby_measurements ((raceID));
 CREATE INDEX ON jderby_measurements ((type));
 
+
+-- ##################################################
+CREATE TABLE jderby_reg_racers (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(255),
+  company VARCHAR(255),
+  avatarURL VARCHAR(255)
+);
+
+
 -- ##################################################
 CREATE SEQUENCE jderby_reg_cars_id_seq;
 CREATE TABLE jderby_reg_cars
