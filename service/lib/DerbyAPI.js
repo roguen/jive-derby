@@ -470,14 +470,13 @@ api.get('/proxy/:tenantID/people/:userID',
   function(req,res,next) {
     var userID = req.params.userID;
     var tenantID = req.params.tenantID;
-
     jive.logger.debug(req.method,'/proxy/:tenantID/people/:userID',tenantID,userID);
 
     var deferred = q.defer();
 
     proxy.getUserDetails(tenantID,userID).then(
       function(details) {
-        if (details["jive"]["enabled"]) {
+        if (details != null) {
           sendJSON(res,200,details);
           deferred.resolve();
         } else {
