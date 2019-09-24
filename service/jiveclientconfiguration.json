@@ -1,8 +1,8 @@
 {
-  "clientUrl": "https://TODO_YOUR_JIVE_DERBY_CLOUD_SERVICE_URL.com",
-  "port": "8090",
+  "clientUrl": "192.168.1.5:8091",
+  "port": "8091",
   "development": false,
-  "packageApps": true,
+  "packageApps": false,
   "packageAddOnConfigure" : "/tiles",
   "scheduler" : "memory",
   "clientUrlExcludesPort": true,
@@ -11,7 +11,7 @@
   "logFileSize": 20480,
   "logFileNumBackups": 3,
   "persistence": "jive-persistence-postgres",
-  "databaseUrl" : "pg://TODO_USERNAME:TODO_PASSWORD@TODO_DATABASE_HOST:5432/TODO_DATABASE_NAME",
+  "databaseUrl" : "pg://pi:start123@192.168.1.5:5432/postgres",
   "dbPool" : 5,
   "extensionInfo": {
     "id": "eb09bb4c-32f5-4f1e-8dd5-8d3ca5b5beff",
@@ -42,7 +42,7 @@
     "jive": {
       "options" : {
         "apiUserFields" : "jive.enabled,resources.avatar,resources.html,resources.self,jive.username,displayName,jive.profile.Company,jive.profile.Title",
-        "tenantID" : "TODO_SHOULD_MATCH_THE_TENANT_ID_OF_YOUR_JIVE_INSTANCE"
+        "tenantID" : "7e79c309-d6ae-47ac-b0c2-4140e310e41d"
       },
       "oauth2": {
         "clientOAuth2CallbackUrl": "/jive/oauth/callback"
@@ -51,8 +51,8 @@
         "loginURL" : "https://%s/analytics/v1/auth/login?clientId=%s&clientSecret=%s",
         "exportURL" : "https://%s/analytics/v2/export/activity%s",
         "service" : "api.jivesoftware.com",
-        "clientID" : "TODO_REPLACE_ME.i",
-        "clientSecret" : "TODO_REPLACE_ME.s"
+        "clientID" : "ezphfg1yi3zej2ykpxe002r1byoiq7a1.i",
+        "clientSecret" : "6t6rq78dvvh726q38d66hz377nvpfssz.s.s"
       },
       "app": {
         "uuid": "6577281e-3b60-4eff-934e-e9675dcca4d3",
@@ -101,27 +101,6 @@
           "tileConfigHeader" : "Your Races - Configure",
           "tileViewHeader" : "Your Races",
           "view-ui" : "views/yourRaces.html"
-        },
-        "popularRaces": {
-          "name" : "JiveDerby-PopularRaces",
-          "title": "%s - Popular Races",
-          "tileConfigHeader" : "Popular Races",
-          "tileViewHeader" : "Popular Races (VIEW)",
-          "view-ui" : "view-popularRaces.html",
-          "lastNumberOfDays" : 4,
-          "maxRaceCount" : 10,
-          "startupDelay" : 30000,
-          "updateInterval" : 600000,
-          "desExportFilter" : "?count=10&fields=name,timestamp,activity.action,activity.actionObject.url,activity.actionObject.subject,activity.actionObject.objectId&filter=match(activity.destination.url,%s)&after=%s&filter=name(ACTIVITY_COMMENT_TILESTREAMENTRY,ACTIVITY_CREATEOUTCOME_COMMENT,ACTIVITY_CREATEOUTCOME_TILESTREAMENTRY,ACTIVITY_LIKE_COMMENT,ACTIVITY_LIKE_TILESTREAMENTRY,ACTIVITY_UNLIKE_COMMENT,ACTIVITY_UNLIKE_TILESTREAMENTRY,ACTIVITY_VIEW_TILESTREAMENTRY,ACTIVITY_SHARE_TILESTREAMENTRY)",
-          "actionPoints" : {
-            "CreateOutcome" : 2,
-            "Share" : 3,
-            "Like" : 3,
-            "Unlike" : -3,
-            "Comment" : 4,
-            "View" : 1,
-            "Default" : 1
-          }
         },
         "raceStats": {
           "name" : "JiveDerby-RaceStats",

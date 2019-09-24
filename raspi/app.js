@@ -62,16 +62,13 @@ jive.service.init()
       app.use(bodyParser.urlencoded({
         extended: true
       }));
-
       /**** ADDING IN THE API MIDDLEWARE LAYER HERE ****/
       app.use('/admin',require('./lib/RaceAdminAPI'));
-
       /*** BootStrapping Service, without SDK ***/
       jive.events.addLocalEventListener( "serviceBootstrapped",
         function() {
           require('./lib/BootStrapHelper')['onBootstrap'](app);
       });
-
     })
 })
 .then( function() { return jive.service.start() } ).then( startServer, failServer );

@@ -21,7 +21,7 @@ var config = jive.service.options["ext"];
 var raceMgr = require('./DerbyRaceHelper');
 
 /*** NEED TO LOAD MODULE AND INIT ***/
-var popularRaces = require('./tiles/PopularRaces');
+//var popularRaces = require('./tiles/PopularRaces');
 
 var onCreateRaceTiles = [
   require('./tiles/RaceActivity'),

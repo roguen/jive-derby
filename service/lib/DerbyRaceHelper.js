@@ -58,6 +58,7 @@ const SQL_RACE_TO_JSON_PFX = 'SELECT row_to_json(t) as json \
 const SQL_RACE_TO_JSON_SFX = " ) t";
 
 DerbyRaceHelper.getRace = function(derbyID,raceID,options) {
+jive.logger.info("DerbyRaceHelper.getRace.1");
   jive.logger.debug("Getting Race Details",derbyID,raceID,options["params"]);
   var deferred = q.defer();
 
@@ -84,11 +85,12 @@ DerbyRaceHelper.getRace = function(derbyID,raceID,options) {
       deferred.reject({ message : err["detail"], details : err });
     } // end function
   );
-
+jive.logger.info("DerbyRaceHelper.getRace.2");
   return deferred.promise;
 } // end function
 
 DerbyRaceHelper.getRaces = function(derbyID,options) {
+jive.logger.info("DerbyRaceHelper.getRaces.1");
   jive.logger.debug("Getting Races",derbyID,options["params"]);
 
   var sql = SQL_RACE_TO_JSON_PFX;
@@ -134,12 +136,14 @@ DerbyRaceHelper.getRaces = function(derbyID,options) {
       deferred.reject({ message : err["detail"], details : err });
     } // end function
   );
-
+jive.logger.debug("DerbyRaceHelper.getRaces.2");
   return deferred.promise;
 } // end function
 
 function saveResults(client, raceID, isDiagnosticMode, options) {
   var deferred = q.defer();
+
+jive.logger.info("DerbyRaceHelper.saveResults");
 
   /*** LOOP THROUGH RESULTS AND INSERT ***/
   options["data"]["results"].forEach(
@@ -157,12 +161,13 @@ function saveResults(client, raceID, isDiagnosticMode, options) {
     } // end for
   );
   deferred.resolve(options);
-
+jive.logger.info("DerbyRaceHelper.saveResults.2");
   return deferred.promise;
 } // end function
 
 //TODO: MOVE TO AWS IOT HELPER AND REFERENCE HERE
 function saveMeasurementValue(client, raceID, type, value, unit) {
+jive.logger.info("DerbyRaceHelper.saveMeasurementValue.1");
   jive.logger.debug('','measurement',type,value,unit,'for race',raceID);
   var deferred = q.defer();
 
@@ -176,7 +181,7 @@ function saveMeasurementValue(client, raceID, type, value, unit) {
           deferred.resolve();
         } // end function
       );
-
+jive.logger.info("DerbyRaceHelper.saveMeasurementValue.2");
   return deferred.promise;
 } // end function
 
@@ -213,6 +218,7 @@ function saveMeasurementValues(client,raceID,options) {
 } // end function
 
 DerbyRaceHelper.createRace = function(options) {
+jive.logger.info("DerbyRaceHelper.createRace.1");
   var deferred = q.defer();
 
   var data = options["data"];
@@ -284,7 +290,7 @@ DerbyRaceHelper.createRace = function(options) {
       );
     } // end function
   );
-
+jive.logger.info("DerbyRaceHelper.createRace.2");
   return deferred.promise;
 } // end function
 

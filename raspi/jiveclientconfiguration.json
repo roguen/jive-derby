@@ -1,7 +1,7 @@
 {
-    "clientUrl": "https://TODO_YOUR_NGROK_SERVICE_NAME.ngrok.io",
+    "clientUrl": "http://192.168.1.5:8090",
     "port": "8090",
-    "development": false,
+    "development": true,
     "clientUrlExcludesPort": true,
     "logLevel": "DEBUG",
     "logFile": "logs/jive-sdk.log",
@@ -11,21 +11,21 @@
       "defaults" : {
         "diagnosticMode" : true,
         "maxLanes" : 4,
-        "cloudServiceURL" : "https://TODO_YOUR_JIVE_DERBY_CLOUD_SERVICE_URL.com",
+        "cloudServiceURL" : "http://192.168.1.98:8091",
         "bleStartupDelay" : 1000
       },
       "jive" : {
-        "tenantID" : "TODO_YOUR_JIVE_TENANT_ID",
+        "tenantID" : "7e79c309-d6ae-47ac-b0c2-4140e310e41d",
         "extendedProfileFields" : {
-          "company" : "Company",
-          "title" : "Title",
+          "company" : "Hitachi Vantara",
+          "title" : "Data Test Track",
           "todo" : "Note to customizer.  See also: service/jiveclientconfiguration.json > ext.jive.options.apiUserFields"
         }
       },
       "security" : {
         "local" : {
-          "username" : "TODO_REPLACE_ME",
-          "password" : "TODO_REPLACE_ME"
+          "username" : "admin",
+          "password" : "start123"
         },
         "remote" : {
           "header": "X-API-KEY",
@@ -33,14 +33,14 @@
         }
       },
       "derby" : {
-        "id" : "todo",
-        "name" : "TODO: Replace Me",
+        "id" : "NT19",
+        "name" : "NEXT19",
         "public" : true,
         "active" : true,
         "createOnStartup" : true
       },
       "ryg-light-tree" : {
-        "enabled" : false,
+        "enabled" : true,
         "defaultTimeout" : 60000,
         "blinkInterval" : 500,
         "light-pins" : {
@@ -80,8 +80,8 @@
         "repeat" : 0,
         "delay" : 500,
         "quality" : 100,
-        "files" : "/tmp/%d-jive-derby-??.jpg",
-        "output" : "/tmp/jive-derby-%d-cam.gif",
+        "files" : "/tmp/%d-derby-??.jpg",
+        "output" : "/home/pi/jive-derby/raspi/public/images/derby-%d-cam.gif",
         "label" : {
           "enabled" : false,
           "text" : "%s #%d\n%s",
@@ -92,7 +92,7 @@
         }
       },
       "derby-timer": {
-        "enabled" : false,
+        "enabled" : true,
         "device" : "/dev/derby-timer",
         "baudRate" : 19200,
         "raceResultsTimeoutMs" : 10500,

@@ -100,24 +100,10 @@ var app = {
     $(self).closest('.lane-wrapper').find('.lookup-racer').hide();
 
     var details = $(self).closest('.lane-wrapper').find('.racer-details');
-    details.find('.racer-avatar').attr('src',racer["resources"]["avatar"]["ref"]);
-    details.find('.racer-name').html(racer["displayName"]);
-
-    if (racer["jive"] && racer["jive"]["profile"]) {
-      var company = racer["jive"]["profile"].filter(
-        function(field) {
-          return (field["jive_label"] === "Company")
-        } // end function
-      );
-      if (company && company.length === 1) {
-        details.find('.racer-company').html(company[0]["value"]);
-      } else {
-        details.find('.racer-company').html('');
-      } // end if
-    } else {
-      details.find('.racer-company').html('');
-    }  // end if
-
+    details.find('.racer-avatar').attr('src',racer["avatarurl"]);
+    details.find('.racer-name').html(racer["name"]);
+    details.find('.racer-company').html(racer["company"]);
+    details.find('.racer-company').html(racer["carid"]);
     $(self).closest('.lane-wrapper').find('.racer-details').show();
 
     /*** SEE: MAX_LANES in race-manager.html ***/
@@ -136,7 +122,6 @@ var app = {
     //TODO: DO A LOADING INTERFACE
     var racerID = $(self).val();
     var lane = app.getLaneFromDOM(self);
-
     if (!isNaN(racerID)) {
       $.ajax({
         type: "GET",
@@ -154,7 +139,7 @@ var app = {
             app.addLaneMessage("error",lane,"Unknown Error, see Race Log (below)");
             console.log('ERROR','racer-details',jqXHR,exception);
           } // end if
-        } // end function
+        }, // end function
       });
     } else {
       app.addLaneMessage("error",lane,"Please enter a valid Racer ID");
