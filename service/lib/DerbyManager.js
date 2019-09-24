@@ -77,21 +77,26 @@ DerbyManager.getDerbySnapshot = function(derbyID,options) {
 * TODO: DOCUMENTATION
 ******************************/
 DerbyManager.createRace = function(data,photo) {
+jive.logger.debug("DerbyManager.createRace.80");
+jive.logger.debug("data: ",data," photo: ",photo);
   var options = {
     "data" : data,
     "photo" : photo
   };
 
   var deferred = q.defer();
-
+jive.logger.debug("DerbyManager.createRace.88");
   //*** SAVE RACE PHOTO FIRST SO WE CAN GET AN S3 URL ***
-  s3.saveRacePhoto(options)
+//  s3.saveRacePhoto(options)
     //TODO: CONFIRM PERFORMANCE OF AWS IOT ... PERHAPS INCLUDE HER INLINE
-    .then(racer.updateRacers)
+//    .then(racer.updateRacers)
+    racer.updateRacers(options)
+//jive.logger.debug("DerbyManager.createRace.2");
     //TODO: CONFIRM PERFORMANCE OF AWS IOT ... PERHAPS INCLUDE HER INLINE
     .then(race.createRace)
     .then(
       function(options) {
+jive.logger.debug("DerbyManager.createRace.99");
         postRaceCreateAsync(options);
         deferred.resolve(options);
       }, // end function - success
@@ -99,7 +104,7 @@ DerbyManager.createRace = function(data,photo) {
         deferred.reject(error);
       } // end function
     );
-
+jive.logger.debug("DerbyManager.createRace.107");
   return deferred.promise;
 } // end function
 

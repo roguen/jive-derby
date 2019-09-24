@@ -1,6 +1,6 @@
 {
-  "clientUrl": "https://TODO_YOUR_JIVE_DERBY_CLOUD_SERVICE_URL.com",
-  "port": "8090",
+  "clientUrl": "https://73.210.51.154:8091",
+  "port": "8091",
   "development": false,
   "packageApps": true,
   "packageAddOnConfigure" : "/tiles",
@@ -11,7 +11,7 @@
   "logFileSize": 20480,
   "logFileNumBackups": 3,
   "persistence": "jive-persistence-postgres",
-  "databaseUrl" : "pg://TODO_USERNAME:TODO_PASSWORD@TODO_DATABASE_HOST:5432/TODO_DATABASE_NAME",
+  "databaseUrl" : "pg://derby:start123@73.210.51.154:65432/derby",
   "dbPool" : 5,
   "extensionInfo": {
     "id": "eb09bb4c-32f5-4f1e-8dd5-8d3ca5b5beff",
@@ -42,7 +42,7 @@
     "jive": {
       "options" : {
         "apiUserFields" : "jive.enabled,resources.avatar,resources.html,resources.self,jive.username,displayName,jive.profile.Company,jive.profile.Title",
-        "tenantID" : "TODO_SHOULD_MATCH_THE_TENANT_ID_OF_YOUR_JIVE_INSTANCE"
+        "tenantID" : "7e79c309-d6ae-47ac-b0c2-4140e310e41d"
       },
       "oauth2": {
         "clientOAuth2CallbackUrl": "/jive/oauth/callback"
@@ -51,8 +51,8 @@
         "loginURL" : "https://%s/analytics/v1/auth/login?clientId=%s&clientSecret=%s",
         "exportURL" : "https://%s/analytics/v2/export/activity%s",
         "service" : "api.jivesoftware.com",
-        "clientID" : "TODO_REPLACE_ME.i",
-        "clientSecret" : "TODO_REPLACE_ME.s"
+        "clientID" : "ezphfg1yi3zej2ykpxe002r1byoiq7a1.i",
+        "clientSecret" : "6t6rq78dvvh726q38d66hz377nvpfssz.s.s"
       },
       "app": {
         "uuid": "6577281e-3b60-4eff-934e-e9675dcca4d3",

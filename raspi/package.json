@@ -9,9 +9,9 @@
       "prestart": "npm install",
       "start": "ngrok http 8090 > /dev/null & node app.js"
     },
-    "author": "Jive Developers (Open Source) <jivedev@jivesoftware.com>",
+    "author": "Roguen Keller, Jive Developers (Open Source) <jivedev@jivesoftware.com>",
     "contributors": [
-      "Ryan Rutan <ryan.rutan@jivesoftware.com>"
+      "Ryan Rutan <ryan.rutan@jivesoftware.com>, Roguen Keller <roguen.keller@hitachivantara.com>"
     ],
     "license": "(MIT OR Apache-2.0)",
     "private": true,
