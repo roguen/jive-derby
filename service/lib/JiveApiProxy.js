@@ -20,6 +20,8 @@ var config = jive.service.options["ext"];
 var q = require('q');
 var util = require('util');
 var db = jive.service.persistence();
+var dbPool = require('./DbHelper')['pool'];
+var dbQuery = require('./DbHelper')['query'];
 
 var ApiProxy = {};
 
@@ -47,6 +49,33 @@ function cleanseResponseBody(response) {
 var PROFILE_FIELDS = config["jive"]["options"]["apiUserFields"] || "id,jive.username";
 ApiProxy.getUserDetails = function(tenantID,userID) {
   var deferred = q.defer();
+  jive.logger.debug('JiveApiProxy.52: We are now querying for user data');
+
+  var sql = 'SELECT row_to_json(racer) as json FROM ('+
+		'SELECT r.id, r.name, r.company, r.avatarurl, c.carid ' +
+		'FROM jderby_reg_racers r JOIN jderby_reg_cars c ON r.id = c.regid '+
+		'WHERE id=$1::int '+
+		'ORDER by c.carid desc '+
+		'LIMIT 1'+
+		') as racer';
+  var sqlParams = [userID];
+
+  dbQuery(sql,sqlParams).then(
+    function(rs) {
+      if (rs.rows.length === 1) {
+        jive.logger.debug('JiveApiProxy.65: ',rs.rows[0]["json"]);
+        deferred.resolve(rs.rows[0]["json"]);
+      } else {
+        deferred.reject({ status: 404, message : "Racer ["+racerID+"] does not exist" });
+      } // end if
+    }, // end function
+    function(err) {
+      deferred.reject({ message : err["detail"], details : err });
+    } // end function
+  );
+  return deferred.promise;
+
+/*
   jive.community.findByTenantID(tenantID).then(
     function(community) {
       if (community) {
@@ -71,8 +100,10 @@ ApiProxy.getUserDetails = function(tenantID,userID) {
       } // end if
     } // end function
   );
-
+jive.logger.debug('JiveApiProxy.109', deferred);
+jive.logger.debug('JiveApiProxy.110', deferred.promise);
   return deferred.promise;
+*/
 } // end function
 
 /****************************************************
