@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, request, Response
 from wtforms import IntegerField, Form, TextField, TextAreaField, DecimalField, validators, StringField, SubmitField, SelectField
 #from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms.validators import InputRequired, ValidationError
 from picamera import PiCamera
 import time
 import psycopg2
@@ -18,39 +19,33 @@ app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 class ReusableForm(Form):
-
     thunderboards = [
         (-1, 'Please Select a Car Base'), 
-        ('000b57xxxxx1', '01'), 
-        ('000b57xxxxx2', '02'), 
-        ('000b57xxxxx3', '03'), 
-        ('000b57xxxxx4', '04'), 
-        ('000b57xxxxx5', '05'), 
-        ('000b57xxxxx6', '06'), 
-        ('000b57xxxxx7', '07'),
-        ('000b57xxxxx8', '08'),
-        ('000b57xxxxx9', '09'),
-        ('000b57xxxx10', '10'),]
+        ('00:0B:57:0B:4B:4F', '01'), 
+        ('00:0B:57:0B:46:44', '02'), 
+        ('00:0B:57:0C:70:65', '03'), 
+        ('00:0B:57:xx:xx:xx', '04'), 
+        ('00:0B:57:xx:xx:xx', '05'), 
+        ('00:0B:57:xx:xx:xx', '06'), 
+        ('00:0B:57:xx:xx:xx', '07'),
+        ('00:0B:57:xx:xx:xx', '08'),
+        ('00:0B:57:xx:xx:xx', '09'),
+        ('00:0B:57:xx:xx:xx', '10'),]
 
-    def validate_dropdown(form, field):
-        if field.data == -1:
+    def validate_base(self, base):
+        if base.data == -1:
            raise ValidationError('Please select a vehicle base...')
 
-    def validate_racer(self, field):
-         print("ID to be compared: ", field.data)
-         racers = lookupRacers()
-#         print("Racers: ", racers)
-         for x in range(0, len(racers)):
-            print("Id = ", racers[x][0])
-            if field.data == racers[x][0]:
-               print("We have a match on: ", field.data)
-               return racers[x]
-#         raise ValidationError('No racer with this ID was found in the system...')
-#         form.errors.append('No racer with this ID was found in the system...')
+    def validate_racerid(self, racerid):
+         print("ID to be compared: ", racerid.data)
+         racers = lookupRacers(racerid.data)
+         #print("Racers: ", racers)
+         if racers == None:
+            raise ValidationError('No racer with this ID was found in the system...')
 
-    racerid = IntegerField('Racer ID:', validators=[validators.required(), validate_racer])
-    weight = DecimalField('Total Weight in oz:', validators=[validators.required()])
-    base = SelectField('Car Base:', choices=thunderboards, validators=[validate_dropdown])
+    racerid = IntegerField("Racer ID:", validators=[InputRequired(message="Please provide a valid racer ID"), validate_racerid])
+#    weight = DecimalField('Total Weight in oz:', validators=[validators.required()])
+    base = SelectField('Car Base:', choices=thunderboards, validators=[validate_base])
 #    photo = FileField('Car Photo:', validators=[FileRequired()])
     weightfront = DecimalField('Front Axle Weight in oz:', validators=[validators.required()])
     weightrear = DecimalField('Rear Axle Weight in oz:', validators=[validators.required()])           
@@ -58,14 +53,17 @@ class ReusableForm(Form):
     @app.route("/", methods=['GET', 'POST'])
     def hello():
         form = ReusableForm(request.form)
-    
+
+        racerResult = None    
         print(form.errors)
         if request.method == 'POST':
             racerid=request.form['racerid']
-            weight=request.form['weight']
+            racerResult = lookupRacers(racerid)
+#            weight=request.form['weight']
             base=request.form['base']
             weightfront=request.form['weightfront']
             weightrear=request.form['weightrear']
+            weight = float(weightfront) + float(weightrear)
 #        f = form.photo.data
 #        filename = secure_filename(f.filename)
 #        f.save(os.path.join(
@@ -75,15 +73,20 @@ class ReusableForm(Form):
             print("racerID: ", racerid, " weight: ", weight, " base: ", base, " front weight: ", weightfront, " rear weight: ", weightrear)
 
             image_location = 'static/images/car%s.jpg' %time.time()
-            capture_image(image_location)
-            id = connect(racerid, weight, weightfront, weightrear, base, image_location)
-    
+#            capture_image(image_location)
+#            id = connect(racerid, weight, weightfront, weightrear, base, image_location)
+         
         if form.validate():
-        # Save the comment here.
-            flash('Your car has been qualified to race!' )
+            # Save the comment here.
+            #flash('Your car has been qualified to race!' )
+            if racerResult != None:
+                flash('Your car has been qualified to race! <br /> Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
         else:
-            print("Form errors: ", form.errors)
-            flash('Error: All the form fields are required. ', form.errors)
+            flash('Error: All the form fields are required.')
+            for error in form.racerid.errors:
+                 flash('Error: ' + error)
+            for error in form.base.errors:
+                 flash('Error: ' + error + " for the derby car base")
     
         return render_template('index.html', form=form)
 
@@ -103,9 +106,10 @@ def capture_image(image_location):
     camera.stop_preview()
     camera.close()
 
-def lookupRacers():
+def lookupRacers(racerid):
     """ Connect to the PostgreSQL database server """
     conn = None
+    racers = []
     try:
 
         # connect to the PostgreSQL server
@@ -115,13 +119,11 @@ def lookupRacers():
         # create a cursor
         cur = conn.cursor()
 
-        # execute a statement
-        cur.execute("SELECT * FROM jderby_reg_racers")
-        racers = cur.fetchall()
+        # execute ai statement
+        query = ("SELECT row_to_json(racer) as json FROM(SELECT * FROM jderby_reg_racers WHERE id="+ str(racerid)+") as racer")
+        cur.execute(query)
 
-#        print("Print each row and it's columns values")
-#        for row in racers:
-#            print("Id = ", row[0])
+        racers = cur.fetchone()
 
         # close the communication with the PostgreSQL
         cur.close()
