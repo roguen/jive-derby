@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
-    company = TextField('Company:', validators=[validators.required(), validators.Length(min=6, max=35)])
+    company = TextField('Company:', validators=[validators.required(), validators.Length(min=1, max=35)])
     
     @app.route("/", methods=['GET', 'POST'])
     def hello():
@@ -32,14 +32,15 @@ class ReusableForm(Form):
             print(name, " ", company)
 
             image_location = 'static/images/image%s.jpg' %time.time()
-            capture_image(image_location)
-            id = connect(name, company, 'http://192.168.1.103:5000/'+image_location)
-    
+#            capture_image(image_location)
+#            id = connect(name, company, 'http://192.168.1.103:5000/'+image_location)
+            id = 68
+
         if form.validate():
         # Save the comment here.
             flash('Thanks for registering ' + name + '.  Your Racer ID is : <strong>' +str(id)+ '</strong>.<br />Remember this ID for the race!' )
         else:
-            flash('Error: All the form fields are required. ')
+            flash('Error: All the form fields are required. ', form.errors)
     
         return render_template('index.html', form=form)
 

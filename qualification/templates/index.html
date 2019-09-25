@@ -5,28 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <div class="container">
 <h2>Data Test Track - Car Qualification</h2>
-<form action="" method="post" role="form">
+<form action="" method="post" role="form" enctype="multipart/form-data">
 <div class="form-group">
-      <label for="racer_id">Racer ID:</label>
-      <input type="text" class="form-control" id="racer_id" name="racer_id" placeholder="Your racer ID">
+      {{ form.csrf_token }}
 
-      <label for="weight">Weight:</label>
-      <input type="text" class="form-control" id="weight" name="weight" placeholder="Weight of your car">
+      {{ form.racerid.label }} <br />
+      {{ form.racerid }}<br />
 
-      <label for="base">Car Base:</label><br />
-      <select class="baseForm" id="baseDropdownSelector" type="text" name="baseDropdown" placeholder="Select your car base number">
-         <option disabled selected>Select a number</option>
-         <option id="base01" value="000b57xxxxx1">01</option>
-         <option id="base02" value="000b57xxxxx2">02</option>
-         <option id="base03" value="000b57xxxxx3">03</option>
-         <option id="base04" value="000b57xxxxx4">04</option>
-         <option id="base05" value="000b57xxxxx5">05</option>
-         <option id="base06" value="000b57xxxxx6">06</option>
-         <option id="base07" value="000b57xxxxx7">07</option>
-         <option id="base08" value="000b57xxxxx8">08</option>
-         <option id="base09" value="000b57xxxxx9">09</option>
-         <option id="base10" value="000b57xxxx10">10</option>
-      </select>
+      {{ form.weight.label }} <br />
+      {{ form.weight }}<br />
+
+      {{ form.weightfront.label }} <br />
+      {{ form.weightfront }}<br />
+
+      {{ form.weightrear.label }} <br />
+      {{ form.weightrear }}<br />
+
+      {{ form.base.label }} <br />
+      {{ form.base }}
 </div>
 <button type="submit" class="btn btn-success">Qualify</button>
 </form>
