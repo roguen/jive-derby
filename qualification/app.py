@@ -77,7 +77,7 @@ class ReusableForm(Form):
             capture_image(image_location)
             hcp_image_location = saveToHCP(image_name, image_location)
  
-            id = connect(racerid, weight, weightfront, weightrear, base, image_location, hcp_image_location)
+            id = connect(racerid, weight, weightfront, weightrear, base, 'http://dtt-derby-qualification:5000/'+image_location, hcp_image_location)
          
         if form.validate():
             # Save the comment here.

@@ -4,8 +4,12 @@
 <link rel="stylesheet" href="static/css/bootstrap-grid.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <div class="container">
-<h2>Data Test Track - Car Qualification</h2>
+<h2>Car Qualification</h2>
 <form action="" method="post" role="form" enctype="multipart/form-data">
+<table>
+<tbody>
+<tr>
+<td style="width: 50%;">
 <div class="form-group">
       {{ form.csrf_token }}
 
@@ -23,6 +27,15 @@
 </div>
 <button type="submit" class="btn btn-success">Qualify</button>
 </form>
+</td>
+<td>
+<div class="meta-details" align="right">
+          <img src="static/images/jive-derby-logo.png" height=300 width=300 /><br/>
+      </div>
+</td>
+</tr>
+</tbody>
+</table>
 {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
