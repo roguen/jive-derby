@@ -118,7 +118,8 @@ CREATE TABLE jderby_reg_racers (
   id INTEGER PRIMARY KEY,
   name VARCHAR(255),
   company VARCHAR(255),
-  avatarURL VARCHAR(255)
+  avatarURL VARCHAR(255),
+  avatar_hcp_url VARCHAR(255)
 );
 
 
@@ -138,7 +139,11 @@ CREATE TABLE jderby_reg_cars
     anglePicURL VARCHAR(255),
     backPicURL VARCHAR(255),
     leftPicURL VARCHAR(255),
-    bottomPicURL VARCHAR(255)
+    bottomPicURL VARCHAR(255),
+    front_image_hcp VARCHAR(255),
+    right_image_hcp VARCHAR(255),
+    top_image_hcp VARCHAR(255),
+    angle_image_hcp VARCHAR(255)
 );
 ALTER SEQUENCE jderby_reg_cars_id_seq OWNED BY jderby_reg_cars.carid;
 CREATE INDEX ON jderby_reg_cars (carID);
