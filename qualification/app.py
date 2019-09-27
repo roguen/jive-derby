@@ -71,10 +71,13 @@ class ReusableForm(Form):
 #        ))
 
             print("racerID: ", racerid, " weight: ", weight, " base: ", base, " front weight: ", weightfront, " rear weight: ", weightrear)
-
-            image_location = 'static/images/car%s.jpg' %time.time()
-#            capture_image(image_location)
-#            id = connect(racerid, weight, weightfront, weightrear, base, image_location)
+            
+            image_name = 'car%s.jpg' %time.time()
+            image_location = 'static/images/'+image_name
+            capture_image(image_location)
+            hcp_image_location = saveToHCP(image_name, image_location)
+ 
+            id = connect(racerid, weight, weightfront, weightrear, base, image_location, hcp_image_location)
          
         if form.validate():
             # Save the comment here.
@@ -114,7 +117,7 @@ def lookupRacers(racerid):
 
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(host="192.168.1.98",database="derby", user="derby", password="start123")
+        conn = psycopg2.connect(host="dtt-derby-server",database="derby", user="derby", password="start123")
 
         # create a cursor
         cur = conn.cursor()
@@ -136,22 +139,21 @@ def lookupRacers(racerid):
 
     return racers
 
-def connect(racerid, weight, weightfront, weightrear, base, anglePic):
+def connect(racerid, weight, weightfront, weightrear, base, anglePic, hcp_image_location):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
 
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(host="192.168.1.98",database="derby", user="derby", password="start123")
+        conn = psycopg2.connect(host="dtt-derby-server",database="derby", user="derby", password="start123")
 
         # create a cursor
         cur = conn.cursor()
 
         # execute a statement
-        print('PostgreSQL database version:')
-        query =  "INSERT INTO public.jderby_reg_cars (regid, weight, frontaxleweight, rearaxleweight, reactuuid, anglepicurl) VALUES (%s, %s, %s, %s, %s, %s) RETURNING carid;"
-        data = (racerid, weight, weightfront, weightrear, base, anglePic)
+        query =  "INSERT INTO public.jderby_reg_cars (regid, weight, frontaxleweight, rearaxleweight, reactuuid, anglepicurl, angle_image_hcp) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING carid;"
+        data = (racerid, weight, weightfront, weightrear, base, anglePic, hcp_image_location)
         cur.execute(query, data)
 
         # display the PostgreSQL database server version
@@ -169,6 +171,14 @@ def connect(racerid, weight, weightfront, weightrear, base, anglePic):
             print('Database connection closed.')
 
     return car_id
+
+def saveToHCP(image_name, image_location):
+    curl_auth = '"Authorization: HCP ZGVyYnk=:a3b9c163f6c520407ff34cfdb83ca5c6"'
+    curl_path = 'https://next2019.dtt-derby.hcp-demo.hcpdemo.com/rest/next2019-cars/'+image_name
+    curl_host = '"'+curl_path+'"'
+    print("Location on HCP: " + curl_host)
+    os.system('curl -k -iT '+image_location+' -H '+curl_auth+' '+curl_host)
+    return curl_path
 
 #def index():
 #    """Video streaming home page."""
