@@ -31,10 +31,12 @@ class ReusableForm(Form):
             company=request.form['company']
             print(name, " ", company)
 
-            image_location = 'static/images/image%s.jpg' %time.time()
-#            capture_image(image_location)
-#            id = connect(name, company, 'http://192.168.1.103:5000/'+image_location)
-            id = 68
+            image_name = 'racer%s.jpg' %time.time()
+            image_location = 'static/images/'+image_name
+            capture_image(image_location)
+            hcp_image_location = saveToHCP(image_name, image_location)
+
+            id = connect(name, company, 'http://dtt-derby-registration:5000/'+image_location, hcp_image_location)
 
         if form.validate():
         # Save the comment here.
@@ -60,22 +62,22 @@ def capture_image(image_location):
     camera.stop_preview()
     camera.close()
 
-def connect(racer_name, racer_company, racer_image_location):
+def connect(racer_name, racer_company, racer_image_location, hcp_image_location):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
 
         # connect to the PostgreSQL server
         print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(host="192.168.1.98",database="derby", user="derby", password="start123")
+        conn = psycopg2.connect(host="dtt-derby-server",database="derby", user="derby", password="start123")
 
         # create a cursor
         cur = conn.cursor()
 
         # execute a statement
         print('PostgreSQL database version:')
-        query =  "INSERT INTO public.jderby_reg_racers (name, company, avatarurl) VALUES (%s, %s, %s) RETURNING id;"
-        data = (racer_name, racer_company, racer_image_location)
+        query =  "INSERT INTO public.jderby_reg_racers (name, company, avatarurl, avatar_hcp_url) VALUES (%s, %s, %s, %s) RETURNING id;"
+        data = (racer_name, racer_company, racer_image_location, hcp_image_location)
         cur.execute(query, data)
 
         # display the PostgreSQL database server version
@@ -93,6 +95,14 @@ def connect(racer_name, racer_company, racer_image_location):
             print('Database connection closed.')
 
     return racer_id
+
+def saveToHCP(image_name, image_location):
+    curl_auth = '"Authorization: HCP ZGVyYnk=:a3b9c163f6c520407ff34cfdb83ca5c6"'
+    curl_path = 'https://next2019.dtt-derby.hcp-demo.hcpdemo.com/rest/next2019-racers/'+image_name
+    curl_host = '"'+curl_path+'"'
+    print("Location on HCP: " + curl_host)
+    os.system('curl -k -iT '+image_location+' -H '+curl_auth+' '+curl_host)
+    return curl_path
 
 #def index():
 #    """Video streaming home page."""
