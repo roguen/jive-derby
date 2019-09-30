@@ -24,7 +24,7 @@ var q = require('q');
 var uuid = require('uuid/v4');
 
 var multer  = require('multer');
-var upload = multer({ dest: 'tmp-race-photos/' });
+var upload = multer({ dest: 'public/images/race-photos/' });
 
 const SECURITY_HEADER = config["service"]["securityHeader"];
 const SECURITY_KEY = config["service"]["securityValue"];

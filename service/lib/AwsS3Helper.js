@@ -51,7 +51,7 @@ S3Helper.init = function() {
   } // end function
 
   function processDefaultFiles() {
-/*
+
     var s3dir = process.cwd() + s3config["defaultFiles"];
 
     var deferred = q.defer();
@@ -66,29 +66,35 @@ S3Helper.init = function() {
 
       fileStream.on('open',
         function () {
-          saveS3File(s3config["bucket"],pathKey,fileStream,contentType).then(
+          jive.logger.error('AwsS3Helper.69: pathKey: ', pathKey);
+          jive.logger.error('AwsS3Helper.69: file: ', file);
+          saveS3File(s3config["bucket"],pathKey,fileStream,contentType, file).then(
+//          saveS3File(s3config["bucket"],pathKey,fileStream,contentType).then(
              function(data) {
                deferred.resolve();
                /*** NOOP ***/
-/*             }, // end function
+             }, // end function
              function(err) {
                /*** NOOP ***/
-/*               deferred.reject();
+               deferred.reject();
              } // end function
           );
       });
 
       return deferred.promise;
-*/
-jive.logger.info('S3Helper.init.processDefaultFiles');
+
+//jive.logger.info('S3Helper.init.processDefaultFiles');
     } // end function
 
     function pushDir(file) {
-/*
+
       var deferred = q.defer();
 
       var pathKey = file.substring(s3dir.length + 1);
 
+      jive.logger.info('AwsS3Helper.95: puyshDir ',s3config["bucket"],pathKey);
+      deferred.resolve();
+/*
       s3.putObject({ Bucket : s3config["bucket"],Key : pathKey + "/", Body : "", ACL : "public-read" },
         function(err,bucket) {
           if (!err) {
@@ -97,15 +103,15 @@ jive.logger.info('S3Helper.init.processDefaultFiles');
           } else {
             jive.logger.warn('Failed to create S3 folder',s3config["bucket"],pathKey);
             deferred.reject();
+tos/derby
           } // end if
       });
-
-      return deferred.promise;
 */
-jive.logger.info('S3Helper.init.pushDir');
+      return deferred.promise;
     } // end function
 
     function crawl(dir) {
+      jive.logger.info('S3Helper.init.crawl');
 /*
       var fileList = fs.readdirSync(dir);
       fileList.forEach(
@@ -128,14 +134,13 @@ jive.logger.info('S3Helper.init.pushDir');
         } // end function
       );
 */
-jive.logger.info('S3Helper.init.crawl');
     } // end function
 
 //    crawl(s3dir);
 
-//    deferred.resolve();
-jive.logger.info('S3Helper.init');
-//    return deferred.promise;
+    deferred.resolve();
+//jive.logger.info('S3Helper.init');
+    return deferred.promise;
   } // end function
 /*
   s3.headBucket({ Bucket : s3config["bucket"] },
@@ -186,12 +191,15 @@ jive.logger.info('S3Helper.init');
       }// end if
     } // end function
   );
-} // end function
 */
+} // end function
 
-function saveS3File(bucket,pathKey,fileStream,contentType,metadata,storageClass,acl) {
-/*
-  jive.logger.debug('','saveS3File',bucket,pathKey,contentType,metadata,storageClass,acl);
+
+function saveS3File(bucket,pathKey,fileStream,contentType,metadata,storageClass,acl, file) {
+//saveS3File(bucketName,
+//              "photos/derby/"+derbyID+"/"+raceID+".gif",
+//              fileStream,"image/gif",fileMetadata, null, fileName)
+  jive.logger.debug('AwsS3Helper.203: ','saveS3File: ','bucket: ', bucket,'pathkey: ', pathKey,'contentType: ',contentType,'metadata: ',metadata,'storageclass: ',storageClass,'acl: ',acl, 'file: ', file);
   var deferred = q.defer();
   storageClass = storageClass || s3config["defaultStorage"];     //TODO:  MAKE THIS CONFIGURABLE //"StorageClass" : "STANDARD_IA",
   acl = acl || "public-read";
@@ -209,6 +217,14 @@ function saveS3File(bucket,pathKey,fileStream,contentType,metadata,storageClass,
   if (contentType) {
     obj["ContentType"] = contentType;
   } // end if
+  
+  jive.logger.debug('AwsS3Helper.216: FileName: ', file);
+  curlFileUpload(file, pathKey, function(contents) {
+    jive.logger.debug("AwsS3Helper.223: " + contents);
+  });
+
+
+/*
   s3.putObject(obj,function(err,data) {
     if (!err) {
       jive.logger.debug("Successfully Added File",pathKey);
@@ -218,51 +234,56 @@ function saveS3File(bucket,pathKey,fileStream,contentType,metadata,storageClass,
       deferred.reject(err);
     } // end if
   });
-
-  return deferred.promise;
 */
-jive.logger.info('S3Helper.saveS3File');
+  deferred.resolve();
+  jive.logger.debug("AwsS3Helper.238")
+  return deferred.promise;
+
+//jive.logger.info('S3Helper.saveS3File');
 } // end function
 
 S3Helper.saveRacePhoto = function(options) {
 
   jive.logger.debug("s3.saveRacePhoto...");
-/*
+
   var bucketName = config["aws"]["s3"]["bucket"];
   var webURL = util.format(config["aws"]["s3"]["webURL"],bucketName);
   var noPhotoURL = util.format(config["aws"]["s3"]["noPhotoImage"],webURL);
   var derbyID = options["data"]["derby"]["id"];
   var raceID = options["data"]["raceID"];
   var photo = options["photo"];
-*/
+
   var deferred = q.defer();
-/*
+
   var fileMetadata = {
     "derbyID" : derbyID.toString(),
     "raceID" : raceID.toString()
   };
 
   var fileName = process.cwd()+"/"+photo["path"];
-*/
-/*  var fileStream = fs.createReadStream(fileName);
+
+  var fileStream = fs.createReadStream(fileName);
+//  var fileStream = fileName;
 
   fileStream.on('error', function (err) {
     /*** NOT STOPPING THE CHAIN FOR A FAILED PHOTO ***/
-/*    jive.logger.error("Error finding temporary race photo, continuing",raceID,err);
+    jive.logger.error("Error finding temporary race photo, continuing",raceID,err);
     options["data"]["photoURL"] = noPhotoURL;
     deferred.resolve(options)
   });
 
   fileStream.on('open', function () {
+jive.logger.debug("AwsS3Helper.272: ", derbyID, " ", raceID, " ", fileName, " ", photo["path"]) 
     saveS3File(bucketName,
               //TODO: CHANGE TO util.format
               //TODO: UNHARD CODE FROM GIF/PNG
-              "photos/derby/"+derbyID+"/"+raceID+".gif",
-              fileStream,"image/gif",fileMetadata).then(
-      function(data) {
-        jive.logger.debug("Successfully Read File",fileName);
+              //"photos/derby/"+derbyID+"/"+raceID+".gif",
+              raceID+".gif",
+              fileStream,"image/gif",fileMetadata, null, null, fileName).then(
+      function() {
+        jive.logger.debug("AwsS3Helper.277: Successfully Read File",fileName);
         //TODO: CHANGE TO util.format
-        options["data"]["photoURL"] = webURL+"/photos/derby/"+derbyID+"/"+raceID+".gif";
+        options["data"]["photoURL"] = webURL+"images/race-photos/"+raceID+".gif";
         deferred.resolve(options);
       }, // end function
       function(err) {
@@ -278,9 +299,32 @@ S3Helper.saveRacePhoto = function(options) {
        jive.logger.debug("Removing TMP File",fileName);
      });
   });
-*/
-jive.logger.info('S3Helper.saveRacePhoto');
+
+//jive.logger.info('S3Helper.saveRacePhoto');
   return deferred.promise;
+};
+
+function curlFileUpload(imageLocation, imageName, callback) {
+    var curlCommand
+    curlCommand = 'curl -k -iT '+imageLocation+' -H "Authorization: HCP ZGVyYnk=:a3b9c163f6c520407ff34cfdb83ca5c6" "https://next2019.dtt-derby.hcp-demo.hcpdemo.com/rest/next2019-races/'+imageName+'"';
+    console.log(curlCommand)
+    var exec = require('child_process').exec;
+    var child = exec(curlCommand);
+    var contents = '';
+    child.stdout.on('data', function(data) {
+        contents += data;
+    });
+    child.stderr.on('data', function(data) {
+        jive.logger.error('error: ', data);
+    });
+    child.on('close', function(code) {
+        try {
+            contents = JSON.parse(contents);
+        } catch(e) { }
+        if ( callback ) {
+            callback(contents);
+        }
+    });
 };
 
 module.exports = S3Helper;

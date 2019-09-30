@@ -174,9 +174,9 @@
     },
     "aws": {
       "s3": {
-        "webURL": "https://TODO_YOUR_HOSTNAME_WHERE_YOU_WILL_STORE_RACE_PHOTOS.com/%s",
+        "webURL": "https://dtt-derby-server:8091/%s",
         "noPhotoImage": "%s/photos/no-photo.png",
-        "bucket": "jive-derby",
+        "bucket": "",
         "location": "us-west-2",
         "defaultStorage": "STANDARD",
         "policy": "{ \"Version\":\"2012-10-17\", \"Statement\":[ { \"Sid\":\"AddPerm\", \"Effect\":\"Allow\", \"Principal\": \"*\", \"Action\":[\"s3:GetObject\"], \"Resource\":[\"arn:aws:s3:::%s/*\"] } ] }",

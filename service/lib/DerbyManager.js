@@ -87,9 +87,9 @@ jive.logger.debug("data: ",data," photo: ",photo);
   var deferred = q.defer();
 jive.logger.debug("DerbyManager.createRace.88");
   //*** SAVE RACE PHOTO FIRST SO WE CAN GET AN S3 URL ***
-//  s3.saveRacePhoto(options)
+  s3.saveRacePhoto(options)
     //TODO: CONFIRM PERFORMANCE OF AWS IOT ... PERHAPS INCLUDE HER INLINE
-//    .then(racer.updateRacers)
+    .then(racer.updateRacers)
     racer.updateRacers(options)
 //jive.logger.debug("DerbyManager.createRace.2");
     //TODO: CONFIRM PERFORMANCE OF AWS IOT ... PERHAPS INCLUDE HER INLINE
