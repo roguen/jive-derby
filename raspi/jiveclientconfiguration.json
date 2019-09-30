@@ -1,5 +1,5 @@
 {
-    "clientUrl": "http://192.168.1.5:8090",
+    "clientUrl": "http://dtt-derby-manager:8090",
     "port": "8090",
     "development": true,
     "clientUrlExcludesPort": true,
@@ -11,7 +11,7 @@
       "defaults" : {
         "diagnosticMode" : true,
         "maxLanes" : 4,
-        "cloudServiceURL" : "http://192.168.1.98:8091",
+        "cloudServiceURL" : "http://dtt-derby-server:8091",
         "bleStartupDelay" : 1000
       },
       "jive" : {
@@ -81,7 +81,7 @@
         "delay" : 500,
         "quality" : 100,
         "files" : "/tmp/%d-derby-??.jpg",
-        "output" : "/home/pi/jive-derby/raspi/public/images/derby-%d-cam.gif",
+        "output" : "/home/derby/jive-derby/raspi/public/images/derby-%d-cam.gif",
         "label" : {
           "enabled" : false,
           "text" : "%s #%d\n%s",
