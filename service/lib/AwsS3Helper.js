@@ -222,7 +222,7 @@ function saveS3File(bucket,pathKey,fileStream,contentType,metadata,storageClass,
   curlFileUpload(file, pathKey, function(contents) {
     jive.logger.debug("AwsS3Helper.223: " + contents);
   });
-
+  copyFile(file, pathKey);
 
 /*
   s3.putObject(obj,function(err,data) {
@@ -307,7 +307,7 @@ jive.logger.debug("AwsS3Helper.272: ", derbyID, " ", raceID, " ", fileName, " ",
 function curlFileUpload(imageLocation, imageName, callback) {
     var curlCommand
     curlCommand = 'curl -k -iT '+imageLocation+' -H "Authorization: HCP ZGVyYnk=:a3b9c163f6c520407ff34cfdb83ca5c6" "https://next2019.dtt-derby.hcp-demo.hcpdemo.com/rest/next2019-races/'+imageName+'"';
-    console.log(curlCommand)
+    jive.logger.debug("Curl Command: ", curlCommand)
     var exec = require('child_process').exec;
     var child = exec(curlCommand);
     var contents = '';
@@ -325,6 +325,13 @@ function curlFileUpload(imageLocation, imageName, callback) {
             callback(contents);
         }
     });
+};
+
+function copyFile(imageLocation, imageName) {
+    var command
+    command = 'cd /home/derby/jive-derby/service/public/images/race-photos/ && cp '+imageLocation+' '+imageName;
+    var exec = require('child_process').exec;
+    var child = exec(command);
 };
 
 module.exports = S3Helper;

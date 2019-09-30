@@ -174,7 +174,7 @@
     },
     "aws": {
       "s3": {
-        "webURL": "https://dtt-derby-server:8091/%s",
+        "webURL": "http://dtt-derby-server:8091/%s",
         "noPhotoImage": "%s/photos/no-photo.png",
         "bucket": "",
         "location": "us-west-2",
