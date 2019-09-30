@@ -83,7 +83,7 @@ class ReusableForm(Form):
             # Save the comment here.
             #flash('Your car has been qualified to race!' )
             if racerResult != None:
-                flash('Your car has been qualified to race! <br /> Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
+                flash('Your car has been qualified to race! <br /><img src="http://dtt-derby-qualification:5000/'+image_location+'" alt="racer photo" height="200" width="200" /><br />Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
         else:
             flash('Error: All the form fields are required.')
             for error in form.racerid.errors:
@@ -98,15 +98,15 @@ def capture_image(image_location):
 
 #    img = Image.open('static/images/helmet_overlay.png')
     camera.resolution = (1024, 768)
-    camera.start_preview()
+##    camera.start_preview()
 #    camera.annotate_text = "Hello world!"
     camera.rotation = 90
-    time.sleep(10)
+##    time.sleep(10)
 #    o = camera.add_overlay(img.tostring(), size=img.size)
 #    o.alpha = 255
 #    o.layer = 3    
     camera.capture(image_location)
-    camera.stop_preview()
+##    camera.stop_preview()
     camera.close()
 
 def lookupRacers(racerid):
