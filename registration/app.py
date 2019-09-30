@@ -40,7 +40,7 @@ class ReusableForm(Form):
 
         if form.validate():
         # Save the comment here.
-            flash('Thanks for registering ' + name + '.  Your Racer ID is : <strong>' +str(id)+ '</strong>.<br />Remember this ID for the race!' )
+            flash('Thanks for registering ' + name + '.  Your Racer ID is : <strong>' +str(id)+ '</strong>.<br />Remember this ID for the race!<br /><img src="http://dtt-derby-registration:5000/'+image_location+'" alt="racer photo" height="200" width="200" />' )
         else:
             flash('Error: All the form fields are required. ', form.errors)
     
@@ -51,15 +51,15 @@ def capture_image(image_location):
 
 #    img = Image.open('static/images/helmet_overlay.png')
     camera.resolution = (100, 100)
-    camera.start_preview()
+##    camera.start_preview()
 #    camera.annotate_text = "Hello world!"
     camera.rotation = 90
-    time.sleep(10)
+##    time.sleep(10)
 #    o = camera.add_overlay(img.tostring(), size=img.size)
 #    o.alpha = 255
 #    o.layer = 3    
     camera.capture(image_location)
-    camera.stop_preview()
+##    camera.stop_preview()
     camera.close()
 
 def connect(racer_name, racer_company, racer_image_location, hcp_image_location):

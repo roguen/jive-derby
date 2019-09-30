@@ -1,5 +1,5 @@
 {
-  "clientUrl": "https://73.210.51.154:8091",
+  "clientUrl": "https://dtt-derby-server:8091",
   "port": "8091",
   "development": false,
   "packageApps": true,
@@ -11,7 +11,7 @@
   "logFileSize": 20480,
   "logFileNumBackups": 3,
   "persistence": "jive-persistence-postgres",
-  "databaseUrl" : "pg://derby:start123@73.210.51.154:65432/derby",
+  "databaseUrl" : "pg://derby:start123@dtt-derby-server:5432/derby",
   "dbPool" : 5,
   "extensionInfo": {
     "id": "eb09bb4c-32f5-4f1e-8dd5-8d3ca5b5beff",

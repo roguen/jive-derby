@@ -5,9 +5,9 @@ def captureImage():
 	camera = PiCamera() 
  
 	camera.start_preview()
-	camera.rotation = 180
-	time.sleep(10)
-	camera.capture('/home/pi/image%s.jpg' %time.time())
+	camera.rotation = 90
+	time.sleep(1)
+	camera.capture('static/images/test.jpg')
 	camera.stop_preview()
 
 if __name__ == '__main__':
