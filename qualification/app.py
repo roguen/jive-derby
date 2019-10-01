@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, request, Response
 from wtforms import IntegerField, Form, TextField, TextAreaField, DecimalField, validators, StringField, SubmitField, SelectField
 #from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import InputRequired, ValidationError
+from wtforms.validators import InputRequired, ValidationError, NumberRange
 from picamera import PiCamera
 import time
 import psycopg2
@@ -47,8 +47,8 @@ class ReusableForm(Form):
 #    weight = DecimalField('Total Weight in oz:', validators=[validators.required()])
     base = SelectField('Car Base:', choices=thunderboards, validators=[validate_base])
 #    photo = FileField('Car Photo:', validators=[FileRequired()])
-    weightfront = DecimalField('Front Axle Weight in oz:', validators=[validators.required()])
-    weightrear = DecimalField('Rear Axle Weight in oz:', validators=[validators.required()])           
+    weightfront = DecimalField('Front Axle Weight in oz:', validators=[validators.required(), validators.NumberRange(min=0, max=5, message="Out of range")])
+    weightrear = DecimalField('Rear Axle Weight in oz:', validators=[validators.required(), validators.NumberRange(min=0, max=5, message="Out of range")])           
 
     @app.route("/", methods=['GET', 'POST'])
     def hello():
@@ -77,13 +77,13 @@ class ReusableForm(Form):
             capture_image(image_location)
             hcp_image_location = saveToHCP(image_name, image_location)
  
-            id = connect(racerid, weight, weightfront, weightrear, base, 'http://dtt-derby-qualification:5000/'+image_location, hcp_image_location)
+            id = connect(racerid, weight, weightfront, weightrear, base, 'http://dtt-derby-qualification:5001/'+image_location, hcp_image_location)
          
         if form.validate():
             # Save the comment here.
             #flash('Your car has been qualified to race!' )
             if racerResult != None:
-                flash('Your car has been qualified to race! <br /><img src="http://dtt-derby-qualification:5000/'+image_location+'" alt="racer photo" height="200" width="200" /><br />Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
+                flash('Your car has been qualified to race! <br /><img src="http://dtt-derby-qualification:5001/'+image_location+'" alt="racer photo" height="200" width="200" /><br />Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
         else:
             flash('Error: All the form fields are required.')
             for error in form.racerid.errors:
@@ -100,7 +100,7 @@ def capture_image(image_location):
     camera.resolution = (1024, 768)
 ##    camera.start_preview()
 #    camera.annotate_text = "Hello world!"
-    camera.rotation = 90
+    camera.rotation = 270
 ##    time.sleep(10)
 #    o = camera.add_overlay(img.tostring(), size=img.size)
 #    o.alpha = 255
@@ -200,4 +200,4 @@ def saveToHCP(image_name, image_location):
 #                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5001)
