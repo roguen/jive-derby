@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS jderby_derbies;
 DROP TABLE IF EXISTS jderby_reg_cars;
 DROP TABLE IF EXISTS jderby_reg_racers;
 DROP SEQUENCE IF EXISTS jderby_reg_cars_id_seq;
+DROP TABLE IF EXISTS thunderboard_xref;
 
 -- TODO: NEED TO ADD NON-NULL CONSTRAINTS AND VALIDATIONS TO SCHEMA (as needed)
 
@@ -147,3 +148,11 @@ CREATE TABLE jderby_reg_cars
 );
 ALTER SEQUENCE jderby_reg_cars_id_seq OWNED BY jderby_reg_cars.carid;
 CREATE INDEX ON jderby_reg_cars (carID);
+
+
+-- ##################################################
+CREATE TABLE thunderboard_xref
+(
+    reactUUID VARCHAR(255),
+    reactNumber VARCHAR(255)
+);
