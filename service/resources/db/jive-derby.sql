@@ -130,9 +130,9 @@ CREATE TABLE jderby_reg_cars
 (
     carID INTEGER PRIMARY KEY DEFAULT nextval('jderby_reg_cars_id_seq'),
     regID INTEGER REFERENCES jderby_reg_racers (id),
-    weight NUMERIC,
-    frontaxleweight NUMERIC,
-    rearaxleweight NUMERIC,
+    weight NUMERIC(3,2),
+    frontaxleweight NUMERIC(3,2),
+    rearaxleweight NUMERIC(3,2),
     reactUUID VARCHAR(255),
     frontPicURL VARCHAR(255),
     rightPicURL VARCHAR(255),
