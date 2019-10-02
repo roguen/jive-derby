@@ -100,7 +100,7 @@ exports.onBootstrap = function(app) {
     });
   } // end if
 
-  var awsIot = new AwsIot(config["aws"]["iot"]["thing"]);
+//  var awsIot = new AwsIot(config["aws"]["iot"]["thing"]);
 
   var iotValues = {};
   var awsPushTimer = null;
@@ -127,7 +127,7 @@ exports.onBootstrap = function(app) {
         awsPushTimer = setTimeout(
           function() {
             jive.logger.debug('***','Sending Data to AWS IoT',iotValues);
-            awsIot.updateShadow(iotValues);
+//            awsIot.updateShadow(iotValues);
             awsPushTimer = null;
           }, // end function
           config["aws"]["iot"]["thing"]["options"]["pushDelayMs"]

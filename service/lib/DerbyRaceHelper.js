@@ -140,13 +140,14 @@ DerbyRaceHelper.getRaces = function(derbyID,options) {
 
 function saveResults(client, raceID, isDiagnosticMode, options) {
   var deferred = q.defer();
-
+jive.logger.debug("DerbyRaceHelper.143: ");
   /*** LOOP THROUGH RESULTS AND INSERT ***/
   options["data"]["results"].forEach(
     function(result, idx, results) {
+jive.logger.debug("DerbyRaceHelper.147: ", result);
       jive.logger.debug('','result',result["lane"],result["rank"],result["racer"]["id"],result["totalTimeSec"],'for race',raceID);
-      client.query("INSERT INTO jderby_results(raceID,lane,rank,racerID,totalTimeSec,speed,isPrimary,isActive) VALUES($1,$2::int,$3::int,$4::int,$5,$6,true,$7)",
-        [raceID,result["lane"],result["rank"],result["racer"]["id"],result["totalTimeSec"],result["speed"],!isDiagnosticMode],
+      client.query("INSERT INTO jderby_results(raceID,lane,rank,racerID,totalTimeSec,speed,isPrimary,isActive,carid) VALUES($1,$2::int,$3::int,$4::int,$5,$6,true,$7,$8)",
+        [raceID,result["lane"],result["rank"],result["racer"]["id"],result["totalTimeSec"],result["speed"],!isDiagnosticMode,result["racer"]["car"]],
         function(err, rs) {
           if (err) {
             deferred.reject({ message: "Unexpected error(s) saving Race["+raceID+"] Results", details: err});

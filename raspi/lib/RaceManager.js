@@ -31,7 +31,8 @@ var RaceManager = function Constructor(config) {
   this.diagnosticMode = config["defaults"]["diagnosticMode"];
 
   function getProfileField(label,user) {
-      if (user && user["jive"] && user["jive"]["profile"]) {
+    jive.logger.debug("getProfileField: label: "+label+" user: "+user);  
+    if (user && user["jive"] && user["jive"]["profile"]) {
         var profileField = user["jive"]["profile"].filter(
           function(field) {
             return (field["jive_label"] === label);
@@ -102,6 +103,7 @@ var RaceManager = function Constructor(config) {
     /*** ADD TIMER DATA TO PAYLOAD ***/
     Object.keys(timerResults["results"]).forEach(
       function(key) {
+jive.logger.debug("RaceManager.115: ",self.racerLanes[key]);
         var laneResults = {
           lane : key.match(/\d+/)[0],
           totalTimeSec : timerResults["results"][key]["duration"],
@@ -111,12 +113,22 @@ var RaceManager = function Constructor(config) {
 
           /*** ADD RACER DATA TO PAYLOAD - EXPECTS JIVE API PERSON STRUCTURE ***/
           racer : {
+
             id : self.racerLanes[key]["id"],
-            uri : self.racerLanes[key]["resources"]["self"]["ref"],
-            profileURL : self.racerLanes[key]["resources"]["html"]["ref"],
-            avatarURL : self.racerLanes[key]["resources"]["avatar"]["ref"],
-            username : self.racerLanes[key]["jive"]["username"],
-            name : self.racerLanes[key]["displayName"]
+            //uri : self.racerLanes[key]["resources"]["self"]["ref"],
+            //profileURL : self.racerLanes[key]["resources"]["html"]["ref"],
+            avatarURL : self.racerLanes[key]["avatarurl"],
+            //username : self.racerLanes[key]["jive"]["username"],
+            name : self.racerLanes[key]["name"],
+	    car : self.racerLanes[key]["carid"]
+/*            
+	    id : "24",
+            uri : "uri",
+            profileURL : "url",
+            avatarURL : "ref",
+            username : "triddle",
+            name : "Tom Riddle"
+*/
           }
         };
         if (config["jive"]["extendedProfileFields"]) {
@@ -319,6 +331,7 @@ RaceManager.prototype.getRacerByLane = function(laneNumber) {
 
 RaceManager.prototype.setRacerByLane = function(laneNumber,racer) {
   var self = this;
+  jive.logger.debug("About to set race by lane: " + laneNumber + " racer: " + racer);
   if (laneNumber > 0 && laneNumber < self.maxLanes && racer) {
     this.racerLanes["L"+laneNumber] = racer;
   } else {

@@ -149,9 +149,9 @@ For consistency, it helps to be able to always know the name of a given device w
 
 **/etc/udev/rules.d/99-usb-serial.rules**
 ````bash
-SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", >ATTRS{idProduct}=="00df", ATTRS{serial}=="0001668818", >SYMLINK+="derby-timer"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="00df", ATTRS{serial}=="0001668818", SYMLINK+="derby-timer"
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", >ATTRS{idProduct}=="00df", ATTRS{serial}=="0001671666", >SYMLINK+="derby-timer"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="00df", ATTRS{serial}=="0003057725", SYMLINK+="derby-timer"
 ````
 > Note: The first line is the regular timer without the solenoid starter, the second is the derby with the solenoid starter.  Given you will only have one plugged in at any point, mapping them both to the same device name is fine.
 

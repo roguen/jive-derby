@@ -24,7 +24,7 @@ var q = require('q');
 var uuid = require('uuid/v4');
 
 var multer  = require('multer');
-var upload = multer({ dest: 'tmp-race-photos/' });
+var upload = multer({ dest: 'public/images/race-photos/' });
 
 const SECURITY_HEADER = config["service"]["securityHeader"];
 const SECURITY_KEY = config["service"]["securityValue"];
@@ -260,9 +260,11 @@ api.get('/derby/:derbyID/stats',
 /******************************************
 * TODO: DOCUMENTATION
 *******************************************/
+jive.logger.debug("DerbyAPI.post.263");
 api.post('/races',
   upload.single('racePhoto'),
   function(req,res,next) {
+jive.logger.debug("DerbyAPI.post.267");
     var data = req.body["raceData"];
     data = (typeof data == 'object') ? data : JSON.parse(data);
     var photo = req.file;
@@ -274,18 +276,21 @@ api.post('/races',
       config["defaults"]["races"]["diagnosticMode"];
 
     var deferred = q.defer();
-
+jive.logger.debug("DerbyAPI.post.279");
+jive.logger.debug("data: ",data," photo: ",photo);
     derbyMgr.createRace(data,photo).then(
       function(success) {
+jive.logger.debug("DerbyAPI.post.283");
         sendJSON(res,201);
         deferred.resolve();
       }, // end function
       function (error) {
+jive.logger.debug("DerbyAPI.post.288",error);
         next(error);
         deferred.reject();
       } // end function
     );
-
+jive.logger.debug("DerbyAPI.post.293");
     return deferred.promise;
   } // end function
 );
@@ -470,14 +475,13 @@ api.get('/proxy/:tenantID/people/:userID',
   function(req,res,next) {
     var userID = req.params.userID;
     var tenantID = req.params.tenantID;
-
     jive.logger.debug(req.method,'/proxy/:tenantID/people/:userID',tenantID,userID);
 
     var deferred = q.defer();
 
     proxy.getUserDetails(tenantID,userID).then(
       function(details) {
-        if (details["jive"]["enabled"]) {
+        if (details != null) {
           sendJSON(res,200,details);
           deferred.resolve();
         } else {

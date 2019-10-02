@@ -52,13 +52,13 @@ DerbyRacerHelper.getRacer = function(derbyID,racerID,options) {
 } // end function
 
 DerbyRacerHelper.updateRacers = function(options) {
-
+jive.logger.info("DerbyRacerHelper.updateRacers.55");
   var raceResults = options["data"]["results"];
-
+jive.logger.info("DerbyRacerHelper.updateRacers.57");
   function saveRacerDetails(racer) {
     jive.logger.debug('','updating racer',racer["id"]);
     var deferred2 = q.defer();
-
+jive.logger.info("DerbyRacerHelper.updateRacers.61", racer);
     var joinDate = null;
     if (racer["joinDate"]) {
       var dateParts = racer["joinDate"].split('/');
@@ -67,15 +67,17 @@ DerbyRacerHelper.updateRacers = function(options) {
       } // end if
     } // end if
 
-    var sql = "INSERT INTO jderby_racers AS r (id,username,name,company,title,avatarURL,profileURL,uri,track,region,joinDate) \
-                     VALUES($1::int, $2::text, $3::text, $4::text, $5::text, $6::text, $7::text, $8::text, $9::text, $10::text, $11) \
+    var sql = "INSERT INTO jderby_racers AS r (id,username,name,company,avatarURL,track) \
+                     VALUES($1::int, $2::text, $3::text, $4::text, $5::text, $6::text) \
                      ON CONFLICT (id) \
-                     DO UPDATE SET username=$2::text, name=$3::text, company=$4::text, title=$5::text, avatarURL=$6::text, profileURL=$7::text, uri=$8::text, track=$9::text, region=$10::text, joinDate=$11 \
+                     DO UPDATE SET username=$2::text, name=$3::text, company=$4::text, avatarURL=$5::text, track=$6::text \
                      WHERE r.id=$1::int";
 
+//    var params = [ racer["id"], racer["username"], racer["name"], racer["company"],
+//                   racer["title"], racer["avatarURL"], racer["profileURL"], racer["uri"], racer["track"], racer["region"], joinDate ];
     var params = [ racer["id"], racer["username"], racer["name"], racer["company"],
-                   racer["title"], racer["avatarURL"], racer["profileURL"], racer["uri"], racer["track"], racer["region"], joinDate ];
-
+                   racer["avatarURL"], racer["track"] ];
+jive.logger.info("DerbyRacerHelper.updateRacers.78",sql,params);
     dbQuery(sql,params).then(
        function(rs) {
          if (rs["rowCount"] === 1) {
