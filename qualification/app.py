@@ -11,6 +11,7 @@ import os
 import camera_pi
 #from wtforms_sqlalchemy.fields import QuerySelectField
 from camera_pi import Camera
+import decimal
 
 # App config.
 DEBUG = True
@@ -43,7 +44,7 @@ class ReusableForm(Form):
          if racers == None:
             raise ValidationError('No racer with this ID was found in the system...')
 
-    racerid = IntegerField("Racer ID:", validators=[InputRequired(message="Please provide a valid racer ID"), validate_racerid])
+    racerid = IntegerField("Racer ID:", validators=[validators.required(), validate_racerid])
 #    weight = DecimalField('Total Weight in oz:', validators=[validators.required()])
     base = SelectField('Car Base:', choices=thunderboards, validators=[validate_base])
 #    photo = FileField('Car Photo:', validators=[FileRequired()])
@@ -59,11 +60,16 @@ class ReusableForm(Form):
         if request.method == 'POST':
             racerid=request.form['racerid']
             racerResult = lookupRacers(racerid)
-#            weight=request.form['weight']
             base=request.form['base']
             weightfront=request.form['weightfront']
             weightrear=request.form['weightrear']
-            weight = float(weightfront) + float(weightrear)
+#            wf = round(weightfrontrough, 2)            
+#            weightfront = wf.quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
+#            wr = round(weightrearrough, 2)
+#            weightrear = wr.quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
+            
+            weightrough = float(weightfront) + float(weightrear)
+            weight = weightrough #decimal.Decimal(round(weightrearrough, 2)).quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
 #        f = form.photo.data
 #        filename = secure_filename(f.filename)
 #        f.save(os.path.join(
@@ -71,19 +77,16 @@ class ReusableForm(Form):
 #        ))
 
             print("racerID: ", racerid, " weight: ", weight, " base: ", base, " front weight: ", weightfront, " rear weight: ", weightrear)
-            
-            image_name = 'car%s.jpg' %time.time()
-            image_location = 'static/images/'+image_name
-            capture_image(image_location)
-            hcp_image_location = saveToHCP(image_name, image_location)
- 
-            id = connect(racerid, weight, weightfront, weightrear, base, 'http://dtt-derby-qualification:5001/'+image_location, hcp_image_location)
-         
         if form.validate():
             # Save the comment here.
-            #flash('Your car has been qualified to race!' )
+            image_name = 'car%s.jpg' %time.time()
+            image_location = 'static/images/'+image_name
             if racerResult != None:
                 flash('Your car has been qualified to race! <br /><img src="http://dtt-derby-qualification:5001/'+image_location+'" alt="racer photo" height="200" width="200" /><br />Welcome ' + racerResult[0]["name"] + " to the Hitachi Vantara Data Test Track!")
+                capture_image(image_location)
+                hcp_image_location = saveToHCP(image_name, image_location)
+
+                id = connect(racerid, weight, weightfront, weightrear, base, 'http://dtt-derby-qualification:5001/'+image_location, hcp_image_location)
         else:
             flash('Error: All the form fields are required.')
             for error in form.racerid.errors:
