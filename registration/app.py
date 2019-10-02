@@ -19,6 +19,8 @@ app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 class ReusableForm(Form):
     name = TextField('Name:', validators=[validators.required()])
     company = TextField('Company:', validators=[validators.required(), validators.Length(min=1, max=35)])
+    phoneNumber = TextField('Phone Number:')
+    email = TextField('Email:')
     
     @app.route("/", methods=['GET', 'POST'])
     def hello():
@@ -30,16 +32,15 @@ class ReusableForm(Form):
             name=request.form['name']
             company=request.form['company']
             print(name, " ", company)
-
+            phoneNumber=request.form['phoneNumber']
+            email=request.form['email']
+        if form.validate():
+        # Save the comment here.
             image_name = 'racer%s.jpg' %time.time()
             image_location = 'static/images/'+image_name
             capture_image(image_location)
             hcp_image_location = saveToHCP(image_name, image_location)
-
-            id = connect(name, company, 'http://dtt-derby-registration:5000/'+image_location, hcp_image_location)
-
-        if form.validate():
-        # Save the comment here.
+            id = connect(name, company, 'http://dtt-derby-registration:5000/'+image_location, hcp_image_location, phoneNumber, email)
             flash('Thanks for registering ' + name + '.  Your Racer ID is : <strong>' +str(id)+ '</strong>.<br />Remember this ID for the race!<br /><img src="http://dtt-derby-registration:5000/'+image_location+'" alt="racer photo" height="200" width="200" />' )
         else:
             flash('Error: All the form fields are required. ', form.errors)
@@ -62,7 +63,7 @@ def capture_image(image_location):
 ##    camera.stop_preview()
     camera.close()
 
-def connect(racer_name, racer_company, racer_image_location, hcp_image_location):
+def connect(racer_name, racer_company, racer_image_location, hcp_image_location, phoneNumber, email):
     """ Connect to the PostgreSQL database server """
     conn = None
     try:
@@ -76,8 +77,8 @@ def connect(racer_name, racer_company, racer_image_location, hcp_image_location)
 
         # execute a statement
         print('PostgreSQL database version:')
-        query =  "INSERT INTO public.jderby_reg_racers (name, company, avatarurl, avatar_hcp_url) VALUES (%s, %s, %s, %s) RETURNING id;"
-        data = (racer_name, racer_company, racer_image_location, hcp_image_location)
+        query =  "INSERT INTO public.jderby_reg_racers (name, company, avatarurl, avatar_hcp_url, phone_number, email) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id;"
+        data = (racer_name, racer_company, racer_image_location, hcp_image_location, phoneNumber, email)
         cur.execute(query, data)
 
         # display the PostgreSQL database server version

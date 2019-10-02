@@ -120,6 +120,8 @@ CREATE TABLE jderby_reg_racers (
   name VARCHAR(255),
   company VARCHAR(255),
   avatarURL VARCHAR(255),
+  phone_number VARCHAR(255),
+  email VARCHAR(255),
   avatar_hcp_url VARCHAR(255)
 );
 
