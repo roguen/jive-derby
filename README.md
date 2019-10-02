@@ -21,4 +21,4 @@ For more details, see the [README](./service/README.md)
 * [Deconstructing the Jive Derby ](https://community.jivesoftware.com/docs/DOC-227242) <br/>
 A detailed breakdown of all supporting aspects of the Jive Derby, including Jive components and cloud design.
 
-* [Jive Derby - Rules and Restrictions](https://community.jivesoftware.com/groups/jiveworld17/blog/2017/03/30/on-your-mark-get-set-lets-derby#comment-3310025) <br/>
+* [Data Test Track Derby - Rules and Restrictions](https://community.hitachivantara.com/s/article/Data-Test-Track-Derby-Rules/) <br/>
