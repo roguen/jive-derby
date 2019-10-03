@@ -2,12 +2,12 @@ Please note that the following project is a fork of the Jive Derby project by Ry
 https://github.com/jivesoftware/jive-derby
 
 
-![Jive Derby](./raspi/public/images/jive-derby-logo.png "Jive Derby")
+![Data Test Track Derby](./raspi/public/images/jive-derby-logo.png "Data Test Track Derby")
 
 The following documentation is available to understand how the Data Test Track Derby operates from the ground up.  Feel free to use this solution to power your own Derby.
 
 # Architecture Overview
-![Jive Derby Architecture Overview](./architecture-overview.png "Jive Derby Architecture Overview")
+![Data Test Track Derby Architecture Overview](./architecture-overview.png "Data Test Track Derby Architecture Overview")
 
 ## Raspberry Pi Local Environment - Raspberry Pi 3
 
