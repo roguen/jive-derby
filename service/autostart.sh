@@ -1,3 +1,4 @@
 #!/bin/bash
-cd ~/jive-derby/service
+cd /
+cd home/derby/jive-derby/service
 npm start
