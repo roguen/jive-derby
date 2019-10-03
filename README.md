@@ -18,7 +18,7 @@ For more details, see [README](./raspi/README.md)
 For more details, see the [README](./service/README.md)
 
 ## External References
-* [Deconstructing the Jive Derby ](https://community.jivesoftware.com/docs/DOC-227242) <br/>
-A detailed breakdown of all supporting aspects of the Jive Derby, including Jive components and cloud design.
+* [Deconstructing the Data Test Track ](https://community.hitachivantara.com/s/article/Deconstructing-the-Data-Test-Track-Derby) <br/>
+A detailed breakdown of all supporting aspects of the Data Test Track Derby, including HCP and Pentaho components.
 
-* [Data Test Track Derby - Rules and Restrictions](https://community.hitachivantara.com/s/article/Data-Test-Track-Derby-Rules/) <br/>
+* [Data Test Track - Rules and Restrictions](https://community.hitachivantara.com/s/article/Data-Test-Track-Derby-Rules/) <br/>
