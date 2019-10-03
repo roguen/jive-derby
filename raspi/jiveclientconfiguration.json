@@ -74,7 +74,8 @@
         "ifx" : "none",
         "burst" : true,
         "roi" : "0.5,0.5,0.41,1",
-        "output" : "/tmp/default.jpg"
+        "output" : "/tmp/default.jpg",
+        "rotation" : "270"
       },
       "gifencoder" : {
         "repeat" : 0,
