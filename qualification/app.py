@@ -45,7 +45,7 @@ class ReusableForm(Form):
             raise ValidationError('No racer with this ID was found in the system...')
 
     racerid = IntegerField("Racer ID:", validators=[validators.required(), validate_racerid])
-#    weight = DecimalField('Total Weight in oz:', validators=[validators.required()])
+    weight = DecimalField('Total Weight in oz:', validators=[validators.required(), validators.NumberRange(min=0, max=5, message="Out of range")])
     base = SelectField('Car Base:', choices=thunderboards, validators=[validate_base])
 #    photo = FileField('Car Photo:', validators=[FileRequired()])
     weightfront = DecimalField('Front Axle Weight in oz:', validators=[validators.required(), validators.NumberRange(min=0, max=5, message="Out of range")])
@@ -68,8 +68,9 @@ class ReusableForm(Form):
 #            wr = round(weightrearrough, 2)
 #            weightrear = wr.quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
             
-            weightrough = float(weightfront) + float(weightrear)
-            weight = weightrough #decimal.Decimal(round(weightrearrough, 2)).quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
+#            weightrough = float(weightfront) + float(weightrear)
+#            weight = weightrough #decimal.Decimal(round(weightrearrough, 2)).quantize(decimal.Decimal('0.00'), rounding=decimal.ROUND_UP)
+            weight=request.form['weight']
 #        f = form.photo.data
 #        filename = secure_filename(f.filename)
 #        f.save(os.path.join(
